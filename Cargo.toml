@@ -1,1 +1,3 @@
-workspace = { members = [ "adventure","engine", "goldminer", "snake"] }
+[workspace]
+members = ["adventure","engine", "goldminer", "snake"]
+resolver = "2"
