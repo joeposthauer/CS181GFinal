@@ -1,0 +1,1 @@
+workspace = { members = [ "adventure","engine", "goldminer", "snake"] }
