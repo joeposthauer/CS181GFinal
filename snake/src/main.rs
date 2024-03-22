@@ -10,6 +10,15 @@ struct TileData {
     sheet_region: SheetRegion,
 }
 
+enum EntityType {
+    Snake,
+    Food,
+}
+
+struct Game {
+    started: bool,
+}
+
 fn main() {
     println!("Hello, world!");
 }
