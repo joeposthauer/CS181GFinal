@@ -20,5 +20,5 @@ struct Game {
 }
 
 fn main() {
-    println!("Hello, world!");
+    println!("Ayelet - Change test");
 }
