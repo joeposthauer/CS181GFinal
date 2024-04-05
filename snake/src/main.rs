@@ -1,4 +1,4 @@
-// use assets_manager::{asset::Png, AssetCache};
+use assets_manager::{asset::Png, AssetCache};
 use frenderer::{
     input::{Input, Key},
     sprites::{Camera2D, SheetRegion, Transform},
@@ -9,13 +9,6 @@ use std::str::FromStr;
 mod support;
 use support::*;
 
-pub struct Level {
-    name: String,
-    bg: SheetRegion,
-    grid: Grid<u8>,
-    tileset: Tileset,
-    starts: Vec<(EntityType, Vec2)>,
-}
 struct Game {
     started: bool,
 }
