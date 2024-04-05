@@ -4,6 +4,7 @@ use frenderer::{
     wgpu, Renderer,
 };
 use std::collections::HashMap;
+use std::str::FromStr;
 
 #[derive(Clone, Copy, Debug)]
 pub struct TileData {
@@ -24,6 +25,23 @@ pub struct Grid<T> {
     width: usize,
     height: usize,
     storage: Box<[T]>,
+}
+
+#[allow(dead_code)]
+impl<T> Grid<T> {
+    pub fn new(width: usize, height: usize, cells: impl IntoIterator<Item = T>) -> Self {
+        let cells: Vec<T> = cells.into_iter().collect();
+        assert_eq!(
+            cells.len(),
+            width * height,
+            "Not the right number of cells for the given width and height"
+        );
+        Self {
+            width,
+            height,
+            storage: cells.into_boxed_slice(),
+        }
+    }
 }
 
 pub struct Tileset {
@@ -168,20 +186,8 @@ impl Level {
                             .next()
                             .expect("Couldn't get entity start type {line}");
                         let etype = match etype {
-                            "player" => EntityType::Player,
-                            "enemy" => EntityType::Enemy,
-                            "door" => {
-                                let to_room = chunks.next().expect("Couldn't get dest room {line}");
-                                let to_x = u16::from_str(
-                                    chunks.next().expect("No dest x coord in door line {line}"),
-                                )
-                                .expect("Couldn't parse x coord as u16 in {line}");
-                                let to_y = u16::from_str(
-                                    chunks.next().expect("No dest y coord in door line {line}"),
-                                )
-                                .expect("Couldn't parse y coord as u16 in {line}");
-                                EntityType::Door(to_room.to_string(), to_x, to_y)
-                            }
+                            "snake" => EntityType::Snake,
+                            "apple" => EntityType::Food,
                             _ => panic!("Unrecognized entity type in {line}"),
                         };
                         let x =
