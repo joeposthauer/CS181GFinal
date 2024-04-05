@@ -11,11 +11,13 @@ use support::*;
 
 struct Game {
     started: bool,
+    snake: Vec<Vec2>,
 }
 
 const TILE_SZ: usize = 4;
-// const W: usize = 320;
-// const H: usize = 240;
+//change as needed
+const W: usize = 320;
+const H: usize = 240;
 
 fn main() {
     println!("Ayelet - Change test");
@@ -44,14 +46,14 @@ impl Game {
             screen_pos: [0.0, 0.0],
             screen_size: [W as f32, H as f32],
         };
-        let sprite_estimate =
-            levels[current_level].sprite_count() + levels[current_level].starts().len();
-        renderer.sprite_group_add(
-            &tile_tex,
-            vec![Transform::ZERO; sprite_estimate],
-            vec![SheetRegion::ZERO; sprite_estimate],
-            camera,
-        );
+        // let sprite_estimate =
+        //     levels[current_level].sprite_count() + levels[current_level].starts().len();
+        // renderer.sprite_group_add(
+        //     &tile_tex,
+        //     vec![Transform::ZERO; sprite_estimate],
+        //     vec![SheetRegion::ZERO; sprite_estimate],
+        //     camera,
+        // );
         let player_start = *levels[current_level]
             .starts()
             .iter()
@@ -59,21 +61,7 @@ impl Game {
             .map(|(_, ploc)| ploc)
             .expect("Start level doesn't put the player anywhere");
         let mut game = Game {
-            current_level,
-            attack_area: Rect {
-                x: 0.0,
-                y: 0.0,
-                w: 0,
-                h: 0,
-            },
-            knockback_timer: 0.0,
-            attack_timer: 0.0,
-            levels,
-            health: 3,
-            enemies: vec![],
-            player: Pos {
-                pos: player_start,
-                dir: Dir::S,
+            started: True,
             },
         };
         game.enter_level(player_start);
