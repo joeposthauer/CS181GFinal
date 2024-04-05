@@ -3,12 +3,17 @@ use frenderer::{
     sprites::{Camera2D, SheetRegion, Transform},
     wgpu, Renderer,
 };
+use std::collections::HashMap;
 
 #[derive(Clone, Copy, Debug)]
 pub struct TileData {
     solid: bool,
     sheet_region: SheetRegion,
 }
+
+const TILE_SZ: usize = 4;
+const W: usize = 320;
+const H: usize = 240;
 
 pub struct Vec2 {
     pub x: f32,
@@ -33,6 +38,11 @@ pub struct Rect {
     pub h: u16,
 }
 
+pub enum EntityType {
+    Snake,
+    Food,
+}
+
 pub struct Level {
     name: String,
     bg: SheetRegion,
@@ -42,7 +52,6 @@ pub struct Level {
 }
 
 impl Level {
-
     pub fn from_str(s: &str) -> Self {
         enum State {
             Metadata,
@@ -214,7 +223,6 @@ impl Level {
             starts,
         }
     }
-
 }
 
 impl Rect {

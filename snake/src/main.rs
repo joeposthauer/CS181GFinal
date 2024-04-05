@@ -9,14 +9,20 @@ use std::str::FromStr;
 mod support;
 use support::*;
 
-enum EntityType {
-    Snake,
-    Food,
+pub struct Level {
+    name: String,
+    bg: SheetRegion,
+    grid: Grid<u8>,
+    tileset: Tileset,
+    starts: Vec<(EntityType, Vec2)>,
 }
-
 struct Game {
     started: bool,
 }
+
+const TILE_SZ: usize = 4;
+// const W: usize = 320;
+// const H: usize = 240;
 
 fn main() {
     println!("Ayelet - Change test");
