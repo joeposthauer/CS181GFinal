@@ -1,55 +1,28 @@
 use assets_manager::{asset::Png, AssetCache};
-use std::str::FromStr;
 use frenderer::{
     input::{Input, Key},
     sprites::{Camera2D, SheetRegion, Transform},
     wgpu, Renderer,
 };
+use std::str::FromStr;
 
-#[derive(Clone, Copy, Debug)]
-struct TileData {
-    solid: bool,
-    sheet_region: SheetRegion,
-}
+mod support;
+use support::*;
 
 enum EntityType {
     Snake,
     Food,
 }
 
-struct Vec2 {
-    pub x: f32,
-    pub y: f32,
-}
-
-struct Game {
-    started: bool,
-}
-
-struct Level {
+pub struct Level {
     name: String,
     bg: SheetRegion,
     grid: Grid<u8>,
     tileset: Tileset,
     starts: Vec<(EntityType, Vec2)>,
 }
-
-pub struct Grid<T> {
-    width: usize,
-    height: usize,
-    storage: Box<[T]>,
-}
-
-struct Tileset {
-    tiles: Vec<TileData>,
-}
-
-#[derive(Clone, Copy, PartialEq, Debug)]
-pub struct Rect {
-    pub x: f32,
-    pub y: f32,
-    pub w: u16,
-    pub h: u16,
+struct Game {
+    started: bool,
 }
 
 fn main() {
@@ -68,14 +41,12 @@ impl Game {
             tile_img.dimensions(),
             Some("tiles-sprites"),
         );
-        let levels = vec![
-            Level::from_str(
-                &cache
-                    .load::<String>("level")
-                    .expect("Couldn't access level.txt")
-                    .read(),
-            ),
-        ];
+        let levels = vec![Level::from_str(
+            &cache
+                .load::<String>("level")
+                .expect("Couldn't access level.txt")
+                .read(),
+        )];
         let current_level = 0;
         let camera = Camera2D {
             screen_pos: [0.0, 0.0],
