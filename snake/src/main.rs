@@ -112,17 +112,17 @@ impl Game {
             tile_img.dimensions(),
             Some("tiles-sprites"),
         );
-        let levels = vec![Level::from_str(
-            &cache
-                .load::<String>("level")
-                .expect("Couldn't access level.txt")
-                .read(),
-        )];
-        let current_level = 0;
-        let camera = Camera2D {
-            screen_pos: [0.0, 0.0],
-            screen_size: [W as f32, H as f32],
-        };
+        // let levels = vec![Level::from_str(
+        //     &cache
+        //         .load::<String>("level")
+        //         .expect("Couldn't access level.txt")
+        //         .read(),
+        // )];
+        // let current_level = 0;
+        // let camera = Camera2D {
+        //     screen_pos: [0.0, 0.0],
+        //     screen_size: [W as f32, H as f32],
+        // };
         // let sprite_estimate =
         //     levels[current_level].sprite_count() + levels[current_level].starts().len();
         // renderer.sprite_group_add(
@@ -139,10 +139,11 @@ impl Game {
         //     .expect("Start level doesn't put the player anywhere");
         let mut game = Game {
             started: true,
-            snake: vec![Vec2 { x: 0.0, y: 0.0 }],
+            snake: vec![Vec2 { x: 10.0, y: 10.0 }],
         };
         game
     }
+    
     fn render(&mut self, frend: &mut Renderer) {
         // make this exactly as big as we need
         // frend.sprite_group_resize(0, self.sprite_count());
