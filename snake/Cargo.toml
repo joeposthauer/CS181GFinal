@@ -8,3 +8,7 @@ edition = "2021"
 [dependencies]
 frenderer = {version="0.9"}
 engine = {path="../engine"}
+winit = "0.29"
+rand = "0.8.5"
+assets_manager = { version = "0.11", features = ["png", "hot-reloading", "embedded"] }
+

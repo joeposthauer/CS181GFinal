@@ -42,4 +42,4 @@ l   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   
 blc t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   t   brc
 ======
 snake 10 10
-item
+apple 5 5
