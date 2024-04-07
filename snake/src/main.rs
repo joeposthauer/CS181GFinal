@@ -54,17 +54,16 @@ impl Game {
         //     vec![SheetRegion::ZERO; sprite_estimate],
         //     camera,
         // );
-        let player_start = *levels[current_level]
-            .starts()
-            .iter()
-            .find(|(t, _)| *t == EntityType::Player)
-            .map(|(_, ploc)| ploc)
-            .expect("Start level doesn't put the player anywhere");
+        // let player_start = *levels[current_level]
+        //     .starts()
+        //     .iter()
+        //     .find(|(t, _)| *t == EntityType::Player)
+        //     .map(|(_, ploc)| ploc)
+        //     .expect("Start level doesn't put the player anywhere");
         let mut game = Game {
-            started: True,
-            },
+            started: true,
+            snake: vec![Vec2{x:0.0,y:0.0,}],
         };
-        game.enter_level(player_start);
         game
     }
 }
