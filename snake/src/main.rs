@@ -125,12 +125,12 @@ impl Game {
             tile_img.dimensions(),
             Some("tiles-sprites"),
         );
-        // let levels = vec![Level::from_str(
-        //     &cache
-        //         .load::<String>("level")
-        //         .expect("Couldn't access level.txt")
-        //         .read(),
-        // )];
+        let levels = vec![Level::from_str(
+            &cache
+                .load::<String>("level")
+                .expect("Couldn't access level.txt")
+                .read(),
+        )];
         // let current_level = 0;
         // let camera = Camera2D {
         //     screen_pos: [0.0, 0.0],
@@ -152,7 +152,7 @@ impl Game {
         //     .expect("Start level doesn't put the player anywhere");
         let mut game = Game {
             started: true,
-            snake: vec![Vec2 { x: 10.0, y: 10.0 }],
+            snake: Snake { dir: (Dir::Right), body: (VecDeque::new()) },
         };
         game
     }

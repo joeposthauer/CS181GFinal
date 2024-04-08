@@ -16,6 +16,9 @@ const TILE_SZ: usize = 4;
 const W: usize = 320;
 const H: usize = 240;
 
+pub mod level;
+pub mod grid;
+
 pub struct Vec2 {
     pub x: f32,
     pub y: f32,
