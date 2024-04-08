@@ -125,7 +125,7 @@ impl Game {
             tile_img.dimensions(),
             Some("tiles-sprites"),
         );
-        let levels = vec![Level::from_str(
+        let levels = vec![support::level::Level::from_str(
             &cache
                 .load::<String>("level")
                 .expect("Couldn't access level.txt")

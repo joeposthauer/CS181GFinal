@@ -1,8 +1,10 @@
-use crate::geom::*;
+// use crate::geom::*;
 use crate::grid::{self, Grid};
 use crate::EntityType;
 use crate::TileData;
 use crate::TILE_SZ;
+use crate::Rect;
+use crate::Vec2;
 use frenderer::{
     sprites::{SheetRegion, Transform},
     Immediate,
@@ -158,20 +160,8 @@ impl Level {
                             .next()
                             .expect("Couldn't get entity start type {line}");
                         let etype = match etype {
-                            "player" => EntityType::Player,
-                            "enemy" => EntityType::Enemy,
-                            "door" => {
-                                let to_room = chunks.next().expect("Couldn't get dest room {line}");
-                                let to_x = u16::from_str(
-                                    chunks.next().expect("No dest x coord in door line {line}"),
-                                )
-                                .expect("Couldn't parse x coord as u16 in {line}");
-                                let to_y = u16::from_str(
-                                    chunks.next().expect("No dest y coord in door line {line}"),
-                                )
-                                .expect("Couldn't parse y coord as u16 in {line}");
-                                EntityType::Door(to_room.to_string(), to_x, to_y)
-                            }
+                            "snake" => EntityType::Snake,
+                            "food" => EntityType::Food,
                             _ => panic!("Unrecognized entity type in {line}"),
                         };
                         let x =
