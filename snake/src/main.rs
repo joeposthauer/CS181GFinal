@@ -6,13 +6,26 @@ use frenderer::{
 };
 use rand::Rng;
 use std::str::FromStr;
+use std::collections::VecDeque;
 
 mod support;
 use support::*;
 
 struct Game {
     started: bool,
-    snake: Vec<Vec2>,
+    snake: Snake,
+}
+
+pub enum Dir {
+    Up,
+    Down,
+    Left,
+    Right
+}
+
+struct Snake {
+    dir: Dir,
+    body: VecDeque<Vec2>
 }
 
 const TILE_SZ: usize = 4;
