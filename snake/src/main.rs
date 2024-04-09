@@ -2,32 +2,32 @@ use assets_manager::{asset::Png, AssetCache};
 use frenderer::{
     input::{Input, Key},
     sprites::{Camera2D, SheetRegion, Transform},
-    wgpu, Renderer,
+    wgpu, Immediate, Renderer,
 };
 use rand::Rng;
-use std::str::FromStr;
 use std::collections::VecDeque;
+use std::str::FromStr;
 
 mod support;
-use support::*;
-
+use support::{grid::Grid, *};
+use support::{level::Level, *};
 
 struct Game {
     started: bool,
     snake: Snake,
-    assets:AssetCache,
+    level: Level,
 }
 
 pub enum Dir {
     Up,
     Down,
     Left,
-    Right
+    Right,
 }
 
 struct Snake {
     dir: Dir,
-    body: VecDeque<Vec2>
+    body: VecDeque<Vec2>,
 }
 
 const TILE_SZ: usize = 4;
@@ -64,8 +64,9 @@ fn main() {
     let mut now = frenderer::clock::Instant::now();
     let mut acc = 0.0;
     drv.run_event_loop::<(), _>(
-        move |window, mut frend| {
-            let game = Game::new(&mut frend, &cache);
+        move |window, frend| {
+            let mut frend = Immediate::new(frend);
+            let game = Game::new(&mut frend, cache);
             (window, game, frend)
         },
         move |event, target, (window, ref mut game, ref mut frend)| {
@@ -81,7 +82,7 @@ fn main() {
                     event: WindowEvent::Resized(size),
                     ..
                 } => {
-                    if !frend.gpu.is_web() {
+                    if !frend.gpu().is_web() {
                         frend.resize_surface(size.width, size.height);
                     }
                     window.request_redraw();
@@ -116,7 +117,7 @@ fn main() {
 }
 
 impl Game {
-    fn new(renderer: &mut Renderer, cache: &AssetCache) -> Self {
+    fn new(renderer: &mut Immediate, cache: AssetCache) -> Self {
         let tile_handle = cache
             .load::<Png>("texture")
             .expect("Couldn't load tilesheet img");
@@ -139,8 +140,7 @@ impl Game {
             screen_pos: [0.0, 0.0],
             screen_size: [W as f32, H as f32],
         };
-        let sprite_estimate =
-            level.sprite_count() + level.starts().len();
+        let sprite_estimate = level.sprite_count() + level.starts().len();
         renderer.sprite_group_add(
             &tile_tex,
             vec![Transform::ZERO; sprite_estimate],
@@ -149,15 +149,17 @@ impl Game {
         );
         let mut game = Game {
             started: true,
-            snake: Snake { dir: (Dir::Right), body: (VecDeque::new()) },
-            assets: cache,
-            
+            snake: Snake {
+                dir: (Dir::Right),
+                body: (VecDeque::new()),
+            },
+            level: level,
         };
         game
     }
-    
-    fn render(&mut self, frend: &mut Renderer) {
-        self.support::level::Level::render_immediate(frend);
+
+    fn render(&mut self, frend: &mut Immediate) {
+        self.level.render_immediate(frend);
     }
 
     fn simulate(&mut self, input: &Input, dt: f32) {
