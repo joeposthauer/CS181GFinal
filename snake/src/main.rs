@@ -11,9 +11,11 @@ use std::collections::VecDeque;
 mod support;
 use support::*;
 
+
 struct Game {
     started: bool,
     snake: Snake,
+    assets:AssetCache,
 }
 
 pub enum Dir {
@@ -125,103 +127,37 @@ impl Game {
             tile_img.dimensions(),
             Some("tiles-sprites"),
         );
-        let levels = vec![support::level::Level::from_str(
+        // Ayelet: Changed this to be only one level
+        let level = support::level::Level::from_str(
             &cache
                 .load::<String>("level")
                 .expect("Couldn't access level.txt")
                 .read(),
-        )];
-        // let current_level = 0;
-        // let camera = Camera2D {
-        //     screen_pos: [0.0, 0.0],
-        //     screen_size: [W as f32, H as f32],
-        // };
-        // let sprite_estimate =
-        //     levels[current_level].sprite_count() + levels[current_level].starts().len();
-        // renderer.sprite_group_add(
-        //     &tile_tex,
-        //     vec![Transform::ZERO; sprite_estimate],
-        //     vec![SheetRegion::ZERO; sprite_estimate],
-        //     camera,
-        // );
-        // let player_start = *levels[current_level]
-        //     .starts()
-        //     .iter()
-        //     .find(|(t, _)| *t == EntityType::Player)
-        //     .map(|(_, ploc)| ploc)
-        //     .expect("Start level doesn't put the player anywhere");
+        );
+        // let current_level = 0; // For future if we want to add more levels?
+        let camera = Camera2D {
+            screen_pos: [0.0, 0.0],
+            screen_size: [W as f32, H as f32],
+        };
+        let sprite_estimate =
+            level.sprite_count() + level.starts().len();
+        renderer.sprite_group_add(
+            &tile_tex,
+            vec![Transform::ZERO; sprite_estimate],
+            vec![SheetRegion::ZERO; sprite_estimate],
+            camera,
+        );
         let mut game = Game {
             started: true,
             snake: Snake { dir: (Dir::Right), body: (VecDeque::new()) },
+            assets: cache,
+            
         };
         game
     }
     
     fn render(&mut self, frend: &mut Renderer) {
-        // make this exactly as big as we need
-        // frend.sprite_group_resize(0, self.sprite_count());
-
-        // let sprites_used = self.level().render_into(frend, 0);
-        // let (sprite_posns, sprite_gfx) = frend.sprites_mut(0, sprites_used..);
-
-        // for (enemy, (trf, uv)) in self
-        //     .enemies
-        //     .iter()
-        //     .zip(sprite_posns.iter_mut().zip(sprite_gfx.iter_mut()))
-        // {
-        //     *trf = Transform {
-        //         w: TILE_SZ as u16,
-        //         h: TILE_SZ as u16,
-        //         x: enemy.pos.x,
-        //         y: enemy.pos.y,
-        //         rot: 0.0,
-        //     };
-        //     *uv = ENEMY[enemy.dir as usize];
-        // }
-        // let sprite_posns = &mut sprite_posns[self.enemies.len()..];
-        // let sprite_gfx = &mut sprite_gfx[self.enemies.len()..];
-        // sprite_posns[0] = Transform {
-        //     w: TILE_SZ as u16,
-        //     h: TILE_SZ as u16,
-        //     x: self.player.pos.x,
-        //     y: self.player.pos.y,
-        //     rot: 0.0,
-        // };
-        // sprite_gfx[0] = PLAYER[self.player.dir as usize].with_depth(1);
-        // if self.attack_area.is_empty() {
-        //     sprite_posns[1] = Transform::ZERO;
-        // } else {
-        //     let (w, h) = match self.player.dir {
-        //         Dir::N | Dir::S => (16, 8),
-        //         _ => (8, 16),
-        //     };
-        //     let delta = self.player.dir.to_vec2() * 7.0;
-        //     sprite_posns[1] = Transform {
-        //         w,
-        //         h,
-        //         x: self.player.pos.x + delta.x,
-        //         y: self.player.pos.y + delta.y,
-        //         rot: 0.0,
-        //     };
-        // }
-        // sprite_gfx[1] = PLAYER_ATK[self.player.dir as usize].with_depth(0);
-
-        // let mut heart_x = 10.0; // Start 10 pixels from the left edge
-        // let heart_y = 10.0; // 10 pixels from the top edge
-
-        // let sprite_posns = &mut sprite_posns[2..];
-        // let sprite_gfx = &mut sprite_gfx[2..];
-
-        // for i in 0..3 {
-        //     sprite_posns[i] = (Transform {
-        //         w: HEART.w as u16, // Width of heart sprite
-        //         h: HEART.h as u16, // Height of heart sprite
-        //         x: heart_x + (i * 10) as f32,
-        //         y: heart_y,
-        //         rot: 0.0, // No rotation
-        //     });
-        //     sprite_gfx[i] = HEART;
-        // }
+        self.support::level::Level::render_immediate(frend);
     }
 
     fn simulate(&mut self, input: &Input, dt: f32) {
@@ -302,22 +238,8 @@ impl Game {
         // self.player.pos = dest;
 
         let mut rng = rand::thread_rng();
-        // for enemy in self.enemies.iter_mut() {
-        //     if rng.gen_bool(0.05) {
-        //         enemy.dir = match rng.gen_range(0..4) {
-        //             0 => Dir::N,
-        //             1 => Dir::E,
-        //             2 => Dir::S,
-        //             3 => Dir::W,
-        //             _ => panic!(),
-        //         };
-        //     }
-        //     enemy.pos += enemy.dir.to_vec2() * ENEMY_SPEED * dt;
-        // }
 
         // function to gather tile-entity contacts
-
-        // WILL NEED THIS
         // pub fn gather_tile_contacts(rects: &[Rect], level: &Level, contacts: &mut Vec<Contact>) {
         //     for (i, rect) in rects.iter().enumerate() {
         //         for (tr, _) in level.tiles_within(*rect).filter(|(_tr, td)| td.solid) {
@@ -351,44 +273,20 @@ impl Game {
         }
 
         //create empty vecs for different contacts
-        let mut em_contacts: Vec<Contact> = Vec::new();
-        let mut pl_contacts: Vec<Contact> = Vec::new();
-        let mut pl_en_contacts: Vec<Contact> = Vec::new();
-        let mut enemies_to_remove: Vec<usize> = Vec::new();
+        // let mut em_contacts: Vec<Contact> = Vec::new();
+        // let mut pl_contacts: Vec<Contact> = Vec::new();
+        // let mut pl_en_contacts: Vec<Contact> = Vec::new();
+        // let mut enemies_to_remove: Vec<usize> = Vec::new();
         // Go from vec of enemies to vec of rectangles
         // let em_rects: Vec<Rect> = self.enemies.iter().map(|&pos| pos.to_rect()).collect();
         // // Get player's Rectengle
         // let player_rect: Rect = self.player.to_rect();
 
-        // // gather enemy-tile contacts
-        // gather_tile_contacts(&em_rects, &self.level(), &mut em_contacts);
-
         // // gather player-tile contacts
         // gather_tile_contacts(&[player_rect], &self.level(), &mut pl_contacts);
 
-        // // gather player attack area-enemy contacts
-        // gather_contact(
-        //     &[player_rect, self.attack_area],
-        //     &em_rects,
-        //     &mut pl_en_contacts,
-        // );
-
-        // // sort enemy contacts vector
-        // em_contacts.sort_by(|a, b| {
-        //     b.overlap.mag_sq().partial_cmp(&a.overlap.mag_sq()).unwrap()
-        //     // _or(std::cmp::Ordering::Equal)
-        // });
         // // sort player contacts vector
         // em_contacts.sort_by(|a, b| b.overlap.mag_sq().partial_cmp(&a.overlap.mag_sq()).unwrap());
-        // // sort player-enemy contacts vector
-        // pl_en_contacts.sort_by(|a, b| b.overlap.mag_sq().partial_cmp(&a.overlap.mag_sq()).unwrap());
-
-        // // deal with enemy-tile contact
-        // for c in em_contacts.drain(..) {
-        //     let displacement: Vec2 =
-        //         compute_displacement(self.enemies[c.index_a].to_rect(), c.rect_b);
-        //     self.enemies[c.index_a].pos += displacement;
-        // }
 
         // // deal with player-tile contact
         // for c in pl_contacts.drain(..) {
