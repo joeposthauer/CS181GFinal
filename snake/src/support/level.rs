@@ -1,10 +1,10 @@
 // use crate::geom::*;
 use crate::grid::{self, Grid};
 use crate::EntityType;
-use crate::TileData;
-use crate::TILE_SZ;
 use crate::Rect;
+use crate::TileData;
 use crate::Vec2;
+use crate::TILE_SZ;
 use frenderer::{
     sprites::{SheetRegion, Transform},
     Immediate,
@@ -161,7 +161,7 @@ impl Level {
                             .expect("Couldn't get entity start type {line}");
                         let etype = match etype {
                             "snake" => EntityType::Snake,
-                            "food" => EntityType::Food,
+                            "apple" => EntityType::Food,
                             _ => panic!("Unrecognized entity type in {line}"),
                         };
                         let x =

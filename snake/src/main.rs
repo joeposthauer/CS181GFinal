@@ -32,8 +32,8 @@ struct Snake {
 
 const TILE_SZ: usize = 4;
 //change as needed
-const W: usize = 320;
-const H: usize = 240;
+const W: usize = 120;
+const H: usize = 120;
 const DT: f32 = 1.0 / 60.0;
 
 struct Contact {
@@ -119,7 +119,7 @@ fn main() {
 impl Game {
     fn new(renderer: &mut Immediate, cache: AssetCache) -> Self {
         let tile_handle = cache
-            .load::<Png>("texture")
+            .load::<Png>("tilesheet")
             .expect("Couldn't load tilesheet img");
         let tile_img = tile_handle.read().0.to_rgba8();
         let tile_tex = renderer.create_array_texture(
