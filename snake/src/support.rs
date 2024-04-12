@@ -6,10 +6,43 @@ use frenderer::{
 use std::collections::HashMap;
 use std::str::FromStr;
 
+
+const FOOD: [SheetRegion; 4] = [
+    SheetRegion::rect(533 + 16 * 2, 39, 16, 16),
+    SheetRegion::rect(533 + 16, 39, 16, 16),
+    SheetRegion::rect(533, 39, 16, 16),
+    SheetRegion::rect(533 + 16 * 3, 39, 16, 16),
+];
+
+const SNAKE: [SheetRegion; 4] = [
+    SheetRegion::rect(533 + 16 * 2, 39, 16, 16),
+    SheetRegion::rect(533 + 16, 39, 16, 16),
+    SheetRegion::rect(533, 39, 16, 16),
+    SheetRegion::rect(533 + 16 * 3, 39, 16, 16),
+];
+
 #[derive(Clone, Copy, Debug)]
 pub struct TileData {
     solid: bool,
     sheet_region: SheetRegion,
+}
+
+pub enum Dir {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
+impl Dir {
+    fn to_vec2(self) -> Vec2 {
+        match self {
+            Dir::Up => Vec2 { x: 0.0, y: 1.0 },
+            Dir::Right => Vec2 { x: 1.0, y: 0.0 },
+            Dir::Down => Vec2 { x: 0.0, y: -1.0 },
+            Dir::Left => Vec2 { x: -1.0, y: 0.0 },
+        }
+    }
 }
 
 const TILE_SZ: usize = 4;
@@ -39,6 +72,40 @@ pub struct Rect {
 pub enum EntityType {
     Snake,
     Food,
+}
+
+struct Entity {
+    pos: Vec2,
+    dir: Dir,
+    etype: EntityType,
+}
+
+impl Entity {
+    pub fn rect(&self) -> Rect {
+        Rect {
+            x: self.pos.x - TILE_SZ as f32 / 2.0 + 2.0,
+            y: self.pos.y - TILE_SZ as f32 / 2.0 + 2.0,
+            w: TILE_SZ as u16 - 4,
+            h: TILE_SZ as u16 - 4,
+        }
+    }
+    pub fn transform(&self) -> Transform {
+        Transform {
+            x: self.pos.x,
+            y: self.pos.y,
+            w: TILE_SZ as u16,
+            h: TILE_SZ as u16,
+            rot: 0.0,
+        }
+    }
+    pub fn uv(&self) -> SheetRegion {
+        match self.etype {
+            EntityType::Snake => SNAKE[self.dir as usize],
+            EntityType::Food => FOOD[self.dir as usize],
+            _ => panic!("can't draw doors"),
+        }
+        .with_depth(1)
+    }
 }
 
 impl Rect {

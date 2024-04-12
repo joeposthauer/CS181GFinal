@@ -19,13 +19,6 @@ struct Game {
     level: Level,
 }
 
-pub enum Dir {
-    Up,
-    Down,
-    Left,
-    Right,
-}
-
 struct Snake {
     dir: Dir,
     body: VecDeque<Vec2>,
@@ -157,6 +150,9 @@ impl Game {
             snake: Snake {
                 dir: (Dir::Right),
                 body: (VecDeque::new()),
+            },
+            apple: Apple {
+                pos: Vec2{x: 100.0, y: 100.0}
             },
             level: level,
         };
