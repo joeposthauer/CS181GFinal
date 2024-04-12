@@ -69,45 +69,6 @@ pub struct Rect {
     pub h: u16,
 }
 
-pub enum EntityType {
-    Snake,
-    Food,
-}
-
-struct Entity {
-    pos: Vec2,
-    dir: Dir,
-    etype: EntityType,
-}
-
-impl Entity {
-    pub fn rect(&self) -> Rect {
-        Rect {
-            x: self.pos.x - TILE_SZ as f32 / 2.0 + 2.0,
-            y: self.pos.y - TILE_SZ as f32 / 2.0 + 2.0,
-            w: TILE_SZ as u16 - 4,
-            h: TILE_SZ as u16 - 4,
-        }
-    }
-    pub fn transform(&self) -> Transform {
-        Transform {
-            x: self.pos.x,
-            y: self.pos.y,
-            w: TILE_SZ as u16,
-            h: TILE_SZ as u16,
-            rot: 0.0,
-        }
-    }
-    pub fn uv(&self) -> SheetRegion {
-        match self.etype {
-            EntityType::Snake => SNAKE[self.dir as usize],
-            EntityType::Food => FOOD[self.dir as usize],
-            _ => panic!("can't draw doors"),
-        }
-        .with_depth(1)
-    }
-}
-
 impl Rect {
     pub fn overlap(&self, other: Rect) -> Option<Vec2> {
         let x_overlap =

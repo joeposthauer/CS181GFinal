@@ -24,6 +24,18 @@ struct Snake {
     body: VecDeque<Vec2>,
 }
 
+impl Snake {
+    pub fn transform(&self) -> Transform {
+        Transform {
+            x: self.pos.x,
+            y: self.pos.y,
+            w: TILE_SZ as u16,
+            h: TILE_SZ as u16,
+            rot: 0.0,
+        }
+    }
+}
+
 struct Apple {
     pos: Vec2,
 }
@@ -161,6 +173,7 @@ impl Game {
 
     fn render(&mut self, frend: &mut Immediate) {
         self.level.render_immediate(frend);
+        
     }
 
     fn simulate(&mut self, input: &Input, dt: f32) {
