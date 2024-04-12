@@ -29,8 +29,8 @@ impl Snake {
         Transform {
             x: self.pos.x,
             y: self.pos.y,
-            w: TILE_SZ as u16,
-            h: TILE_SZ as u16,
+            w: 4,
+            h: 4,
             rot: 0.0,
         }
     }
@@ -38,6 +38,18 @@ impl Snake {
 
 struct Apple {
     pos: Vec2,
+}
+
+impl Apple {
+    pub fn transform(&self) -> Transform {
+        Transform {
+            x: self.pos.x,
+            y: self.pos.y,
+            w: 4,
+            h: 4,
+            rot: 0.0,
+        }
+    }
 }
 
 const TILE_SZ: usize = 4;
