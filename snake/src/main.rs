@@ -15,6 +15,7 @@ use support::{level::Level, *};
 struct Game {
     started: bool,
     snake: Snake,
+    apple: Apple,
     level: Level,
 }
 
@@ -28,6 +29,10 @@ pub enum Dir {
 struct Snake {
     dir: Dir,
     body: VecDeque<Vec2>,
+}
+
+struct Apple {
+    pos: Vec2,
 }
 
 const TILE_SZ: usize = 4;
