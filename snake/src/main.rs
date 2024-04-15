@@ -66,6 +66,10 @@ struct Contact {
     overlap: Vec2,
 }
 
+const FOOD: [SheetRegion; 1] = [
+    SheetRegion::rect(533 + 16 * 2, 39, 16, 16),
+];
+
 fn main() {
     #[cfg(not(target_arch = "wasm32"))]
     let source =
@@ -185,7 +189,7 @@ impl Game {
 
     fn render(&mut self, frend: &mut Immediate) {
         self.level.render_immediate(frend);
-        
+        frend.draw_sprite(0, self.apple.transform(), FOOD[0]);
     }
 
     fn simulate(&mut self, input: &Input, dt: f32) {
