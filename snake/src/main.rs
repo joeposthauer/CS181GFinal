@@ -25,10 +25,10 @@ struct Snake {
 }
 
 impl Snake {
-    pub fn transform(&self) -> Transform {
+    pub fn transform(&self, index: usize) -> Transform {
         Transform {
-            x: self.body.get(0).unwrap().x,
-            y: self.body.get(0).unwrap().y,
+            x: self.body.get(index).unwrap().x,
+            y: self.body.get(index).unwrap().y,
             w: 4,
             h: 4,
             rot: 0.0,
@@ -173,11 +173,16 @@ impl Game {
             vec![SheetRegion::ZERO; sprite_estimate],
             camera,
         );
+        let mut snake_body: VecDeque<Vec2> = VecDeque::new();
+        for i in 0i8..5 {
+            let i = f32::from(i);
+            snake_body.push_back(Vec2{x: 100.0 + i*4.0, y: 100.0})
+        }
         let mut game = Game {
             started: true,
             snake: Snake {
                 dir: (Dir::Right),
-                body: (VecDeque::new()),
+                body: (snake_body),
             },
             apple: Apple {
                 pos: Vec2{x: 100.0, y: 100.0}
@@ -190,6 +195,11 @@ impl Game {
     fn render(&mut self, frend: &mut Immediate) {
         self.level.render_immediate(frend);
         frend.draw_sprite(0, self.apple.transform(), FOOD[0]);
+        let mut count: usize = 0;
+        for vector2 in self.snake.body.iter() {
+            frend.draw_sprite(0, self.snake.transform(count), FOOD[0]);
+            count = count + 1;
+        }
     }
 
     fn simulate(&mut self, input: &Input, dt: f32) {
