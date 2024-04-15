@@ -61,6 +61,11 @@ pub struct Tileset {
     tiles: Vec<TileData>,
 }
 
+pub enum EntityType {
+    Snake,
+    Food,
+}
+
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub struct Rect {
     pub x: f32,

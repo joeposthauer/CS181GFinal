@@ -27,8 +27,8 @@ struct Snake {
 impl Snake {
     pub fn transform(&self) -> Transform {
         Transform {
-            x: self.pos.x,
-            y: self.pos.y,
+            x: self.body.get(0).unwrap().x,
+            y: self.body.get(0).unwrap().y,
             w: 4,
             h: 4,
             rot: 0.0,
