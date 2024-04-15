@@ -67,7 +67,14 @@ struct Contact {
 }
 
 const FOOD: [SheetRegion; 1] = [
-    SheetRegion::rect(533 + 16 * 2, 39, 16, 16),
+    SheetRegion::rect(533, 39, 4, 4),
+];
+
+const SNAKE: [SheetRegion; 4] = [
+    SheetRegion::rect(100 + 16 * 2, 39, 4, 4),
+    SheetRegion::rect(100 + 16, 39, 4, 4),
+    SheetRegion::rect(100, 39, 4, 4),
+    SheetRegion::rect(100 + 16 * 3, 39, 4, 4),
 ];
 
 fn main() {
@@ -197,7 +204,7 @@ impl Game {
         frend.draw_sprite(0, self.apple.transform(), FOOD[0]);
         let mut count: usize = 0;
         for vector2 in self.snake.body.iter() {
-            frend.draw_sprite(0, self.snake.transform(count), FOOD[0]);
+            frend.draw_sprite(0, self.snake.transform(count), SNAKE[self.snake.dir as usize]);
             count = count + 1;
         }
     }

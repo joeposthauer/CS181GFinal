@@ -27,6 +27,8 @@ pub struct TileData {
     sheet_region: SheetRegion,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[repr(u8)]
 pub enum Dir {
     Up,
     Down,
