@@ -210,83 +210,13 @@ impl Game {
     }
 
     fn simulate(&mut self, input: &Input, dt: f32) {
-        // if self.attack_timer > 0.0 {
-        //     self.attack_timer -= dt;
-        // }
-        // if self.knockback_timer > 0.0 {
-        //     self.knockback_timer -= dt;
-        // }
-        // Added
-        // for contact in player_enemy_contacts {
-        //     if let Some(overlap) = self.player.to_rect().overlap(self.enemies[contact.index_b].rect()) {
-        //         if self.player.knockback_timer <= 0.0 {
-        //             // set the knockback timer
-        //             //  reduce life
-        //         }
-        //     }
-        // }
-        // End adding
         let mut dx = input.key_axis(Key::ArrowLeft, Key::ArrowRight) * DT;
-        // now down means -y and up means +y!  beware!
         let mut dy = input.key_axis(Key::ArrowDown, Key::ArrowUp) * DT;
-        // let attacking = !self.attack_area.is_empty();
-        // let knockback = self.knockback_timer > 0.0;
-        // if attacking {
-        //     // while attacking we can't move
-        //     dx = 0.0;
-        //     dy = 0.0;
-        // } else if knockback {
-        //     // during knockback we move but don't turn around
-        //     let delta = self.player.dir.to_vec2();
-        //     dx = -delta.x * KNOCKBACK_SPEED * dt;
-        //     dy = -delta.y * KNOCKBACK_SPEED * dt;
-        // } else {
-        //     // not attacking, no knockback, do normal movement
-        //     if dx > 0.0 {
-        //         self.player.dir = Dir::E;
-        //     }
-        //     if dx < 0.0 {
-        //         self.player.dir = Dir::W;
-        //     }
-        //     if dy > 0.0 {
-        //         self.player.dir = Dir::N;
-        //     }
-        //     if dy < 0.0 {
-        //         self.player.dir = Dir::S;
-        //     }
-        // }
-        // if self.attack_timer <= 0.0 && input.is_key_pressed(Key::Space) {
-        //     // TODO POINT: compute the attack area's center based on the player's position and facing and some offset
-        //     // For the spritesheet provided, the attack is placed 8px "forwards" from the player.
-        //     let direction_vector = self.player.dir.to_vec2();
-        //     // Assuming the attack extends 16 pixels from the player's center and is 16x16 in size.
-        //     // Adjust values as needed.
-        //     let attack_center_offset = 8.0;
-        //     let attack_size = Vec2 { x: 16.0, y: 16.0 };
-        //     let attack_center = self.player.pos + (direction_vector * attack_center_offset);
-
-        //     self.attack_area = Rect {
-        //         x: attack_center.x - attack_size.x / 2.0,
-        //         y: attack_center.y - attack_size.y / 2.0,
-        //         w: attack_size.x as u16,
-        //         h: attack_size.y as u16,
-        //     };
-
-        //     self.attack_timer = ATTACK_MAX_TIME;
-        // } else if self.attack_timer <= ATTACK_COOLDOWN_TIME {
-        //     // "turn off" the attack, but the cooldown is still going
-        //     self.attack_area = Rect {
-        //         x: 0.0,
-        //         y: 0.0,
-        //         w: 0,
-        //         h: 0,
-        //     };
-        // }
+        }
 
         // let dest = self.player.pos + Vec2 { x: dx, y: dy };
         // self.player.pos = dest;
 
-        let mut rng = rand::thread_rng();
 
         // function to gather tile-entity contacts
         // pub fn gather_tile_contacts(rects: &[Rect], level: &Level, contacts: &mut Vec<Contact>) {
@@ -371,4 +301,3 @@ impl Game {
             return overlap;
         }
     }
-}
