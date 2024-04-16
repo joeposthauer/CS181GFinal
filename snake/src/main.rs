@@ -70,11 +70,9 @@ const FOOD: [SheetRegion; 1] = [
     SheetRegion::rect(533, 39, 4, 4),
 ];
 
-const SNAKE: [SheetRegion; 4] = [
-    SheetRegion::rect(100 + 16 * 2, 39, 4, 4),
-    SheetRegion::rect(100 + 16, 39, 4, 4),
-    SheetRegion::rect(100, 39, 4, 4),
-    SheetRegion::rect(100 + 16 * 3, 39, 4, 4),
+const SNAKE: [SheetRegion; 2] = [
+    SheetRegion::rect(190, 345, 4, 4),
+    SheetRegion::rect(190, 395, 4, 4),
 ];
 
 fn main() {
@@ -203,8 +201,12 @@ impl Game {
         self.level.render_immediate(frend);
         frend.draw_sprite(0, self.apple.transform(), FOOD[0]);
         let mut count: usize = 0;
+        frend.draw_sprite(0, self.snake.transform(count), SNAKE[0]);
         for vector2 in self.snake.body.iter() {
-            frend.draw_sprite(0, self.snake.transform(count), SNAKE[self.snake.dir as usize]);
+            if count == 0 {
+                continue;
+            }
+            frend.draw_sprite(0, self.snake.transform(count), SNAKE[1]);
             count = count + 1;
         }
     }
