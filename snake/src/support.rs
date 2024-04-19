@@ -6,7 +6,6 @@ use frenderer::{
 use std::collections::HashMap;
 use std::str::FromStr;
 
-
 const FOOD: [SheetRegion; 4] = [
     SheetRegion::rect(533 + 16 * 2, 39, 16, 16),
     SheetRegion::rect(533 + 16, 39, 16, 16),
@@ -37,7 +36,7 @@ pub enum Dir {
 }
 
 impl Dir {
-    fn to_vec2(self) -> Vec2 {
+    pub fn to_vec2(self) -> Vec2 {
         match self {
             Dir::Up => Vec2 { x: 0.0, y: 1.0 },
             Dir::Right => Vec2 { x: 1.0, y: 0.0 },
@@ -51,12 +50,24 @@ const TILE_SZ: usize = 4;
 const W: usize = 320;
 const H: usize = 240;
 
-pub mod level;
 pub mod grid;
+pub mod level;
 
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub struct Vec2 {
     pub x: f32,
     pub y: f32,
+}
+
+impl std::ops::Add for Vec2 {
+    type Output = Vec2;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Self::Output {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+        }
+    }
 }
 
 pub struct Tileset {

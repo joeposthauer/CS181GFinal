@@ -17,6 +17,8 @@ struct Game {
     snake: Snake,
     apple: Apple,
     level: Level,
+    frame_counter: usize,
+    move_interval: usize,
 }
 
 struct Snake {
@@ -194,6 +196,8 @@ impl Game {
                 pos: Vec2 { x: 50.0, y: 50.0 },
             },
             level: level,
+            frame_counter: 0,
+            move_interval: 5,
         };
         game
     }
@@ -214,9 +218,92 @@ impl Game {
     }
 
     fn simulate(&mut self, input: &Input, dt: f32) {
-        let mut dx = input.key_axis(Key::ArrowLeft, Key::ArrowRight) * DT;
-        let mut dy = input.key_axis(Key::ArrowDown, Key::ArrowUp) * DT;
+        self.frame_counter += 1;
+        if self.frame_counter >= self.move_interval {
+            if input.is_key_down(Key::ArrowLeft) && self.snake.dir != Dir::Right {
+                self.snake.dir = Dir::Left;
+            } else if input.is_key_down(Key::ArrowRight) && self.snake.dir != Dir::Left {
+                self.snake.dir = Dir::Right;
+            } else if input.is_key_down(Key::ArrowUp) && self.snake.dir != Dir::Down {
+                self.snake.dir = Dir::Up;
+            } else if input.is_key_down(Key::ArrowDown) && self.snake.dir != Dir::Up {
+                self.snake.dir = Dir::Down;
+            }
+            let head_pos = self
+                .snake
+                .body
+                .front()
+                .expect("Snake body is empty")
+                .clone();
+            let new_head_pos = head_pos + self.snake.dir.to_vec2();
+            // coliision with the wall - restart game
+            if new_head_pos.x < 0.0
+                || new_head_pos.y < 0.0
+                || new_head_pos.x >= W as f32
+                || new_head_pos.y >= H as f32
+            {
+                self.restart();
+                return;
+            }
+
+            if self.snake.body.contains(&new_head_pos) {
+                self.restart();
+                return;
+            }
+            if new_head_pos == self.apple.pos {
+                // 3 times to growth is a more noticlable
+                self.snake.body.push_front(new_head_pos);
+                self.snake.body.push_front(new_head_pos);
+                self.snake.body.push_front(new_head_pos);
+                self.relocate_apple();
+            } else {
+                self.snake.body.push_front(new_head_pos);
+                self.snake.body.pop_back();
+            }
+            self.frame_counter = 0;
+        }
     }
+
+    fn relocate_apple(&mut self) {
+        // Ensure that the new apple position is not on the snake's body
+        loop {
+            let new_x = rand::thread_rng().gen_range(10..W - 10) as f32;
+            let new_y = rand::thread_rng().gen_range(10..H - 10) as f32;
+            let new_pos = Vec2 { x: new_x, y: new_y };
+            if !self.snake.body.contains(&new_pos) {
+                self.apple.pos = new_pos;
+                break;
+            }
+        }
+    }
+
+    fn restart(&mut self) {
+        self.frame_counter = 0;
+
+        // Reset snake position and direction
+        let initial_snake_length = 5; // for example, start with a length of 5
+        let mut initial_body: VecDeque<Vec2> = VecDeque::new();
+        let start_x = W as f32 / 2.0; // Start in the middle of the width
+        let start_y = H as f32 / 2.0; // Start in the middle of the height
+        for i in 0..initial_snake_length {
+            initial_body.push_back(Vec2 {
+                x: start_x - i as f32 * TILE_SZ as f32,
+                y: start_y,
+            });
+        }
+        self.snake = Snake {
+            dir: Dir::Right, // Starting direction
+            body: initial_body,
+        };
+
+        // Reposition the apple
+        self.relocate_apple();
+    }
+
+    // fn simulate(&mut self, input: &Input, dt: f32) {
+    //     let mut dx = input.key_axis(Key::ArrowLeft, Key::ArrowRight) * DT;
+    //     let mut dy = input.key_axis(Key::ArrowDown, Key::ArrowUp) * DT;
+    // }
 
     // let dest = self.player.pos + Vec2 { x: dx, y: dy };
     // self.player.pos = dest;
