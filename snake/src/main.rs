@@ -8,9 +8,8 @@ use rand::Rng;
 use std::collections::VecDeque;
 use std::str::FromStr;
 
-mod support;
-use support::{grid::Grid, *};
-use support::{level::Level, *};
+use engine::{grid::Grid, *};
+use engine::{level::Level, *};
 
 struct Game {
     started: bool,
@@ -160,7 +159,7 @@ impl Game {
             Some("tiles-sprites"),
         );
         // Ayelet: Changed this to be only one level
-        let level = support::level::Level::from_str(
+        let level = engine::level::Level::from_str(
             &cache
                 .load::<String>("level")
                 .expect("Couldn't access level.txt")

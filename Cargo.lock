@@ -491,6 +491,12 @@ checksum = "9ea835d29036a4087793836fa931b08837ad5e957da9e23886b29586fb9b6650"
 [[package]]
 name = "engine"
 version = "0.1.0"
+dependencies = [
+ "assets_manager",
+ "frenderer",
+ "rand",
+ "winit",
+]
 
 [[package]]
 name = "env_logger"
@@ -661,6 +667,12 @@ dependencies = [
 [[package]]
 name = "goldminer"
 version = "0.1.0"
+dependencies = [
+ "engine",
+ "frenderer",
+ "wgpu",
+ "winit",
+]
 
 [[package]]
 name = "gpu-alloc"
