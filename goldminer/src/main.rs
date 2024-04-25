@@ -30,6 +30,8 @@ struct Game {
     levels: Vec<Level>,
     entities: Vec<EntityType>,
     timer: usize,
+    frame_counter: usize,
+    move_interval: usize,
 }
 struct Claw {
     dir: f32,
