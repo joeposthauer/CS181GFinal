@@ -5,7 +5,7 @@ use frenderer::{
     wgpu, Immediate, Renderer,
 };
 
-use std::collections::VecDeque;
+use std::{arch::aarch64::float32x2_t, collections::VecDeque};
 
 use engine::{grid::Grid, *};
 use engine::{level::Level, *};
@@ -16,7 +16,7 @@ const H: usize = 120;
 const DT: f32 = 1.0 / 60.0;
 
 
-pub enum EntityType {
+pub enum Items {
     Gold,
     Silver,
     Rock,
@@ -32,7 +32,7 @@ struct Game {
     timer: usize,
 }
 struct Claw {
-    dir: Dir,
+    dir: f32,
     body: VecDeque<Vec2>,
     isDeployed: bool,
 }
@@ -51,7 +51,7 @@ impl Claw {
 
 struct Object {
     pos: Vec2,
-    e_type: EntityType,
+    e_type: Items,
 }
 
 impl Object {
