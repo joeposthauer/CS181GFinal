@@ -14,6 +14,7 @@ const TILE_SZ: usize = 8;
 const W: usize = 120;
 const H: usize = 120;
 const DT: f32 = 1.0 / 60.0;
+const CLAW_ROT_VEL: f32 = 1.0;
 
 
 pub enum Items {
