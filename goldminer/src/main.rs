@@ -33,6 +33,7 @@ struct Game {
 struct Claw {
     dir: Dir,
     body: VecDeque<Vec2>,
+    isDeployed: bool,
 }
 
 impl Claw {
@@ -225,7 +226,7 @@ impl Game {
     fn simulate(&mut self, input: &Input, dt: f32) {
         self.frame_counter += 1;
         if self.frame_counter >= self.move_interval {
-            if input.is_key_down(Key::ArrowLeft) && self.snake.dir != Dir::Right {
+            if input.is_key_down(Key::Space) && self.snake.dir != Dir::Right {
                 self.snake.dir = Dir::Left;
             } 
             let head_pos = self
