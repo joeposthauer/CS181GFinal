@@ -10,7 +10,7 @@ use std::collections::VecDeque;
 use engine::{grid::Grid, *};
 use engine::{level::Level, *};
 
-const TILE_SZ: usize = 4;
+const TILE_SZ: usize = 8;
 const W: usize = 120;
 const H: usize = 120;
 const DT: f32 = 1.0 / 60.0;
@@ -41,8 +41,8 @@ impl Claw {
         Transform {
             x: self.body.get(index).unwrap().x,
             y: self.body.get(index).unwrap().y,
-            w: 4,
-            h: 4,
+            w: 8,
+            h: 8,
             rot: 0.0,
         }
     }
@@ -58,8 +58,8 @@ impl Object {
         Transform {
             x: self.pos.x,
             y: self.pos.y,
-            w: 4,
-            h: 4,
+            w: 8,
+            h: 8,
             rot: 0.0,
         }
     }
@@ -76,10 +76,10 @@ struct Contact {
 
 
 // we need to define where in tilesheet we are representing each of these
-const CLAW: [SheetRegion; 1] = [SheetRegion::rect(533, 39, 4, 4)];
-const GOLD: [SheetRegion; 1] = [SheetRegion::rect(190, 345, 4, 4)];
-const SILVER: [SheetRegion; 1] = [SheetRegion::rect(190, 345, 4, 4)];
-const ROCK: [SheetRegion; 1] = [SheetRegion::rect(190, 345, 4, 4)];
+const CLAW: [SheetRegion; 1] = [SheetRegion::rect(533, 39, 8, 8)];
+const GOLD: [SheetRegion; 1] = [SheetRegion::rect(190, 345, 8, 8)];
+const SILVER: [SheetRegion; 1] = [SheetRegion::rect(190, 345, 8, 8)];
+const ROCK: [SheetRegion; 1] = [SheetRegion::rect(190, 345, 8, 8)];
 
 fn main() {
     #[cfg(not(target_arch = "wasm32"))]
@@ -184,7 +184,7 @@ impl Game {
             vec![SheetRegion::ZERO; sprite_estimate],
             camera,
         );
-        let mut snake_body: VecDeque<Vec2> = VecDeque::new();
+        let mut claw_body: VecDeque<Vec2> = VecDeque::new();
         // for i in 0i8..5 {
         //     let i = f32::from(i);
         //     snake_body.push_back(Vec2 {
@@ -226,8 +226,8 @@ impl Game {
     fn simulate(&mut self, input: &Input, dt: f32) {
         self.frame_counter += 1;
         if self.frame_counter >= self.move_interval {
-            if input.is_key_down(Key::Space) && self.snake.dir != Dir::Right {
-                self.snake.dir = Dir::Left;
+            if input.is_key_down(Key::Space) && self.claw.isDeployed != true {
+                self.claw.isDeployed = true;
             } 
             let head_pos = self
                 .snake
