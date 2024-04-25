@@ -14,7 +14,7 @@ const TILE_SZ: usize = 8;
 const W: usize = 120;
 const H: usize = 120;
 const DT: f32 = 1.0 / 60.0;
-const CLAW_ROT_VEL: f32 = 1.0;
+const CLAW_ROT_VEL: f32 = 0.1;
 
 
 pub enum Items {
@@ -29,7 +29,7 @@ struct Game {
     score: usize,
     current_level: usize,
     levels: Vec<Level>,
-    entities: Vec<EntityType>,
+    entities: Vec<Object>,
     timer: usize,
     frame_counter: usize,
     move_interval: usize,
@@ -37,17 +37,18 @@ struct Game {
 struct Claw {
     dir: f32,
     body: VecDeque<Vec2>,
-    isDeployed: bool,
+    is_deployed: bool,
+    velo_dir: bool,
 }
 
 impl Claw {
-    pub fn transform(&self, index: usize) -> Transform {
+    pub fn transform(&self) -> Transform {
         Transform {
-            x: self.body.get(index).unwrap().x,
-            y: self.body.get(index).unwrap().y,
+            x: self.body.get(0).unwrap().x,
+            y: self.body.get(0).unwrap().y,
             w: 8,
             h: 8,
-            rot: 0.0,
+            rot: self.dir,
         }
     }
 }
@@ -215,57 +216,71 @@ impl Game {
     }
 
     fn render(&mut self, frend: &mut Immediate) {
-        self.level.render_immediate(frend);
-        frend.draw_sprite(0, self.apple.transform(), FOOD[0]);
-        let mut count: usize = 0;
-        frend.draw_sprite(0, self.snake.transform(count), SNAKE[0]);
-        for vector2 in self.snake.body.iter() {
-            if (count == 0) {
-                count = count + 1;
-                continue;
-            };
-            frend.draw_sprite(0, self.snake.transform(count), SNAKE[1]);
-            count = count + 1;
+        self.current_level.render_immediate(frend);
+        frend.draw_sprite(0, self.claw.transform(), CLAW[0]);
+        for obj in self.entities.iter() {
+            match obj.e_type {
+                Gold => frend.draw_sprite(0, obj.transform(), GOLD[0]),
+                Silver => frend.draw_sprite(0, obj.transform(), SILVER[0]),
+                Rock => frend.draw_sprite(0, obj.transform(), ROCK[0]),
+                Gem => frend.draw_sprite(0, obj.transform(), GEM[0]),
+            }
         }
     }
 
     fn simulate(&mut self, input: &Input, dt: f32) {
         self.frame_counter += 1;
         if self.frame_counter >= self.move_interval {
-            if input.is_key_down(Key::Space) && self.claw.isDeployed != true {
-                self.claw.isDeployed = true;
+            if input.is_key_down(Key::Space) && self.claw.is_deployed != true {
+                self.claw.is_deployed = true;
+            }
+            // rotate claw
+            if self.claw.is_deployed == false {
+                if self.claw.velo_dir == true {
+                    if self.claw.dir > 1.0 {
+                        self.claw.velo_dir = !self.claw.velo_dir;
+                    } else {
+                        self.claw.dir += CLAW_ROT_VEL;
+                    }
+                } else {
+                    if self.claw.dir < 1.0 {
+                        self.claw.velo_dir = !self.claw.velo_dir;
+                    } else {
+                        self.claw.dir -= CLAW_ROT_VEL;
+                    }
+                }
             } 
-            let head_pos = self
-                .snake
-                .body
-                .front()
-                .expect("Snake body is empty")
-                .clone();
-            let new_head_pos = head_pos + self.snake.dir.to_vec2();
-            // coliision with the wall - restart game
-            if new_head_pos.x < 0.0
-                || new_head_pos.y < 0.0
-                || new_head_pos.x >= W as f32
-                || new_head_pos.y >= H as f32
-            {
-                self.restart();
-                return;
-            }
+            // let head_pos = self
+            //     .snake
+            //     .body
+            //     .front()
+            //     .expect("Snake body is empty")
+            //     .clone();
+            // let new_head_pos = head_pos + self.snake.dir.to_vec2();
+            // // coliision with the wall - restart game
+            // if new_head_pos.x < 0.0
+            //     || new_head_pos.y < 0.0
+            //     || new_head_pos.x >= W as f32
+            //     || new_head_pos.y >= H as f32
+            // {
+            //     self.restart();
+            //     return;
+            // }
 
-            if self.snake.body.contains(&new_head_pos) {
-                self.restart();
-                return;
-            }
-            if new_head_pos == self.apple.pos {
-                // 3 times to growth is a more noticlable
-                self.snake.body.push_front(new_head_pos);
-                self.snake.body.push_front(new_head_pos);
-                self.snake.body.push_front(new_head_pos);
-                self.relocate_apple();
-            } else {
-                self.snake.body.push_front(new_head_pos);
-                self.snake.body.pop_back();
-            }
+            // if self.snake.body.contains(&new_head_pos) {
+            //     self.restart();
+            //     return;
+            // }
+            // if new_head_pos == self.apple.pos {
+            //     // 3 times to growth is a more noticlable
+            //     self.snake.body.push_front(new_head_pos);
+            //     self.snake.body.push_front(new_head_pos);
+            //     self.snake.body.push_front(new_head_pos);
+            //     self.relocate_apple();
+            // } else {
+            //     self.snake.body.push_front(new_head_pos);
+            //     self.snake.body.pop_back();
+            // }
             self.frame_counter = 0;
         }
     }
