@@ -20,6 +20,7 @@ pub enum EntityType {
     Gold,
     Silver,
     Rock,
+    Gem,
 }
 
 struct Game {
@@ -76,10 +77,12 @@ struct Contact {
 
 
 // we need to define where in tilesheet we are representing each of these
-const CLAW: [SheetRegion; 1] = [SheetRegion::rect(533, 39, 8, 8)];
-const GOLD: [SheetRegion; 1] = [SheetRegion::rect(190, 345, 8, 8)];
-const SILVER: [SheetRegion; 1] = [SheetRegion::rect(190, 345, 8, 8)];
-const ROCK: [SheetRegion; 1] = [SheetRegion::rect(190, 345, 8, 8)];
+const CLAW: [SheetRegion; 1] = [SheetRegion::rect(1, 62, 8, 8)];
+const GOLD: [SheetRegion; 1] = [SheetRegion::rect(1, 17, 8, 8)];
+const SILVER: [SheetRegion; 1] = [SheetRegion::rect(1, 26, 8, 8)];
+const ROCK: [SheetRegion; 1] = [SheetRegion::rect(1, 35, 8, 8)];
+const GEM: [SheetRegion; 1] = [SheetRegion::rect(1, 53, 8, 8)];
+const CHAIN: [SheetRegion; 1] = [SheetRegion::rect(1, 71, 8, 8)];
 
 fn main() {
     #[cfg(not(target_arch = "wasm32"))]
