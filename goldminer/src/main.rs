@@ -78,10 +78,8 @@ struct Contact {
     overlap: Vec2,
 }
 
-
-
 // we need to define where in tilesheet we are representing each of these
-const CLAW: [SheetRegion; 1] = [SheetRegion::rect(1, 62, 8, 8)];
+const CLAW: [SheetRegion; 1] = [SheetRegion::rect(1, 70, 8, 8)];
 const GOLD: [SheetRegion; 1] = [SheetRegion::rect(1, 17, 8, 8)];
 const SILVER: [SheetRegion; 1] = [SheetRegion::rect(1, 26, 8, 8)];
 const ROCK: [SheetRegion; 1] = [SheetRegion::rect(1, 35, 8, 8)];
@@ -163,7 +161,7 @@ fn main() {
 impl Game {
     fn new(renderer: &mut Immediate, cache: AssetCache) -> Self {
         let tile_handle = cache
-            .load::<Png>("tilesheet")
+            .load::<Png>("Goldminer_tilesheet1")
             .expect("Couldn't load tilesheet img");
         let tile_img = tile_handle.read().0.to_rgba8();
         let tile_tex = renderer.create_array_texture(
