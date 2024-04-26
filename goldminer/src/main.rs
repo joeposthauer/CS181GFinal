@@ -5,7 +5,10 @@ use frenderer::{
     wgpu, Immediate, Renderer,
 };
 
+// Ayelet - I don't know how to solve this one. What are we using it for? 
 use std::{arch::aarch64::float32x2_t, collections::VecDeque};
+
+// use std::collections::VecDeque;
 
 use engine::{grid::Grid, *};
 use engine::{level::Level, *};
@@ -15,7 +18,6 @@ const W: usize = 120;
 const H: usize = 120;
 const DT: f32 = 1.0 / 60.0;
 const CLAW_ROT_VEL: f32 = 0.1;
-
 
 pub enum Items {
     Gold,
@@ -27,7 +29,7 @@ pub enum Items {
 struct Game {
     claw: Claw,
     score: usize,
-    current_level: usize,
+    current_level: Level, // Ayelet - was usize, changed to level
     levels: Vec<Level>,
     entities: Vec<Object>,
     timer: usize,
@@ -197,20 +199,22 @@ impl Game {
         //         y: 100.0,
         //     })
         // }
-        // let mut game = Game {
-        //     started: true,
-        //     snake: Snake {
-        //         dir: (Dir::Right),
-        //         body: (snake_body),
-        //     },
-        //     apple: Apple {
-        //         pos: Vec2 { x: 50.0, y: 50.0 },
-        //     },
-        //     level: level,
-        //     frame_counter: 0,
-        //     move_interval: 5,
-        // };
-        // game
+        let mut game = Game {
+            claw: Claw {
+                dir: 0.0,
+                body: claw_body,
+                is_deployed: false,
+                velo_dir: false,
+            },
+            score: 0,
+            current_level: level,
+            levels: vec![],
+            entities: vec![],
+            timer: 30,
+            frame_counter: 0,
+            move_interval: 5,
+        };
+        game
     }
 
     fn render(&mut self, frend: &mut Immediate) {
@@ -247,7 +251,7 @@ impl Game {
                         self.claw.dir -= CLAW_ROT_VEL;
                     }
                 }
-            } 
+            }
             // let head_pos = self
             //     .snake
             //     .body

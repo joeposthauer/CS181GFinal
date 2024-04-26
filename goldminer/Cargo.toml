@@ -10,5 +10,5 @@ frenderer = {version="0.9"}
 engine = {path="../engine"}
 winit = "0.29"
 wgpu = "0.19"
-
+assets_manager = { version = "0.11", features = ["png", "hot-reloading", "embedded"] }
 
