@@ -19,13 +19,6 @@ const H: usize = 120;
 const DT: f32 = 1.0 / 60.0;
 const CLAW_ROT_VEL: f32 = 0.1;
 
-pub enum Items {
-    Gold,
-    Silver,
-    Rock,
-    Gem,
-}
-
 struct Game {
     claw: Claw,
     score: usize,
@@ -57,7 +50,7 @@ impl Claw {
 
 struct Object {
     pos: Vec2,
-    e_type: Items,
+    e_type: EntityType,
 }
 
 impl Object {
@@ -69,6 +62,17 @@ impl Object {
             h: 8,
             rot: 0.0,
         }
+    }
+
+    pub fn uv(&self) -> SheetRegion {
+        match self.e_type {
+            EntityType::Gold => GOLD[0],
+            EntityType::Silver => SILVER[0],
+            EntityType::Rock => ROCK[0],
+            EntityType::Gem => GEM[0],
+            _ => panic!("can't draw this type"),
+        }
+        .with_depth(1)
     }
 }
 
@@ -192,6 +196,10 @@ impl Game {
             camera,
         );
         let mut claw_body: VecDeque<Vec2> = VecDeque::new();
+        claw_body.push_back(Vec2 {
+            x: 100.0,
+            y: 100.0,
+        });
         // for i in 0i8..5 {
         //     let i = f32::from(i);
         //     snake_body.push_back(Vec2 {
@@ -222,10 +230,14 @@ impl Game {
         frend.draw_sprite(0, self.claw.transform(), CLAW[0]);
         for obj in self.entities.iter() {
             match obj.e_type {
-                Gold => frend.draw_sprite(0, obj.transform(), GOLD[0]),
-                Silver => frend.draw_sprite(0, obj.transform(), SILVER[0]),
-                Rock => frend.draw_sprite(0, obj.transform(), ROCK[0]),
-                Gem => frend.draw_sprite(0, obj.transform(), GEM[0]),
+                EntityType::Gold => frend.draw_sprite(0, obj.transform(), GOLD[0]),
+                EntityType::Silver => frend.draw_sprite(0, obj.transform(), SILVER[0]),
+                EntityType::Rock => frend.draw_sprite(0, obj.transform(), ROCK[0]),
+                EntityType::Gem => frend.draw_sprite(0, obj.transform(), GEM[0]),
+                EntityType::Snake => continue,
+                EntityType::Food => continue,
+                EntityType::Claw => continue,
+                
             }
         }
     }
@@ -251,6 +263,10 @@ impl Game {
                         self.claw.dir -= CLAW_ROT_VEL;
                     }
                 }
+            }
+
+            if self.claw.is_deployed == true {
+                
             }
             // let head_pos = self
             //     .snake
