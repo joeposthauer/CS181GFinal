@@ -162,6 +162,11 @@ impl Level {
                         let etype = match etype {
                             "snake" => EntityType::Snake,
                             "apple" => EntityType::Food,
+                            "gold" => EntityType::Gold,
+                            "silver" => EntityType::Silver,
+                            "gem" => EntityType::Gem,
+                            "rock" => EntityType::Rock,
+                            "claw" => EntityType::Claw,
                             _ => panic!("Unrecognized entity type in {line}"),
                         };
                         let x =

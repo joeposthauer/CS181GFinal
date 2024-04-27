@@ -278,7 +278,7 @@ impl Game {
             }
 
             if self.claw.is_deployed == true {
-
+                
             }
             // let head_pos = self
             //     .snake

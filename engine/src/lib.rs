@@ -77,6 +77,11 @@ pub struct Tileset {
 pub enum EntityType {
     Snake,
     Food,
+    Gold,
+    Silver,
+    Rock,
+    Gem,
+    Claw,
 }
 
 #[derive(Clone, Copy, PartialEq, Debug)]
