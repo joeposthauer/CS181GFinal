@@ -84,13 +84,21 @@ struct Contact {
     overlap: Vec2,
 }
 
+// Claw 68 260 128 64
+// Chain 1 262 64 64
+// Rock 134 65 64 64
+// Gold 1 131 64 64
+// Silver 1 197 64 64
+// Gem 68 131 64 64
+// Bottom background  1 65 64 64
+// Top Background 68 65 64 64
 // we need to define where in tilesheet we are representing each of these
-const CLAW: [SheetRegion; 1] = [SheetRegion::rect(1, 70, 8, 8)];
-const GOLD: [SheetRegion; 1] = [SheetRegion::rect(1, 17, 8, 8)];
-const SILVER: [SheetRegion; 1] = [SheetRegion::rect(1, 26, 8, 8)];
-const ROCK: [SheetRegion; 1] = [SheetRegion::rect(1, 35, 8, 8)];
-const GEM: [SheetRegion; 1] = [SheetRegion::rect(1, 53, 8, 8)];
-const CHAIN: [SheetRegion; 1] = [SheetRegion::rect(1, 71, 8, 8)];
+const CLAW: [SheetRegion; 1] = [SheetRegion::rect(68, 260, 64, 32)];
+const GOLD: [SheetRegion; 1] = [SheetRegion::rect(1, 131, 32, 32)];
+const SILVER: [SheetRegion; 1] = [SheetRegion::rect(1, 197, 32, 32)];
+const ROCK: [SheetRegion; 1] = [SheetRegion::rect(134, 65, 32, 32)];
+const GEM: [SheetRegion; 1] = [SheetRegion::rect(68, 131, 32, 32)];
+const CHAIN: [SheetRegion; 1] = [SheetRegion::rect(1, 262, 32, 32)];
 
 fn main() {
     #[cfg(not(target_arch = "wasm32"))]
@@ -167,7 +175,7 @@ fn main() {
 impl Game {
     fn new(renderer: &mut Immediate, cache: AssetCache) -> Self {
         let tile_handle = cache
-            .load::<Png>("Goldminer_tilesheet1")
+            .load::<Png>("Goldminer_Sheet_Transparent")
             .expect("Couldn't load tilesheet img");
         let tile_img = tile_handle.read().0.to_rgba8();
         let tile_tex = renderer.create_array_texture(
@@ -217,6 +225,15 @@ impl Game {
                     y: 200.0,
                 },
                 e_type: EntityType::Gem,
+            }
+        );
+        entities.push(
+            Object {
+                pos: Vec2 {
+                    x: 100.0,
+                    y: 200.0,
+                },
+                e_type: EntityType::Gold,
             }
         );
         let mut game = Game {
@@ -278,7 +295,7 @@ impl Game {
             }
 
             if self.claw.is_deployed == true {
-                
+
             }
             // let head_pos = self
             //     .snake
