@@ -200,13 +200,25 @@ impl Game {
             x: 100.0,
             y: 100.0,
         });
-        // for i in 0i8..5 {
-        //     let i = f32::from(i);
-        //     snake_body.push_back(Vec2 {
-        //         x: 100.0 + i * 4.0,
-        //         y: 100.0,
-        //     })
-        // }
+        let mut entities: Vec<Object> = vec![];
+        entities.push(
+            Object {
+                pos: Vec2 {
+                    x: 200.0,
+                    y: 300.0,
+                },
+                e_type: EntityType::Rock,
+            }
+        );
+        entities.push(
+            Object {
+                pos: Vec2 {
+                    x: 200.0,
+                    y: 200.0,
+                },
+                e_type: EntityType::Gem,
+            }
+        );
         let mut game = Game {
             claw: Claw {
                 dir: 0.0,
@@ -217,7 +229,7 @@ impl Game {
             score: 0,
             current_level: level,
             levels: vec![],
-            entities: vec![],
+            entities: entities,
             timer: 30,
             frame_counter: 0,
             move_interval: 5,
@@ -266,7 +278,7 @@ impl Game {
             }
 
             if self.claw.is_deployed == true {
-                
+
             }
             // let head_pos = self
             //     .snake
