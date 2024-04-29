@@ -5,8 +5,13 @@ use frenderer::{
     wgpu, Immediate, Renderer,
 };
 
-// Ayelet - I don't know how to solve this one. What are we using it for?
-use std::{arch::aarch64::float32x2_t, collections::VecDeque};
+// Ayelet - I cannot run this line. It seems to step from differences in hardware that I guess my machine
+// doesnt' support. I changed it to the following two lines which seems to solve the issue for me.
+// use std::{arch::aarch64::float32x2_t, collections::VecDeque};
+
+#[cfg(target_arch = "aarch64")]
+use std::arch::aarch64::float32x2_t;
+use std::collections::VecDeque;
 
 // use std::collections::VecDeque;
 
@@ -14,8 +19,8 @@ use engine::{grid::Grid, *};
 use engine::{level::Level, *};
 
 const TILE_SZ: usize = 8;
-const W: usize = 120;
-const H: usize = 120;
+const W: usize = 240; //was 120 - should be 240, 8 * 30, no?
+const H: usize = 240; //was 120 - should be 240, 8 * 30, no?
 const DT: f32 = 1.0 / 60.0;
 const CLAW_ROT_VEL: f32 = 0.1;
 
