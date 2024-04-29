@@ -5,7 +5,7 @@ use frenderer::{
     wgpu, Immediate, Renderer,
 };
 
-// Ayelet - I don't know how to solve this one. What are we using it for? 
+// Ayelet - I don't know how to solve this one. What are we using it for?
 use std::{arch::aarch64::float32x2_t, collections::VecDeque};
 
 // use std::collections::VecDeque;
@@ -92,13 +92,22 @@ struct Contact {
 // Gem 68 131 64 64
 // Bottom background  1 65 64 64
 // Top Background 68 65 64 64
-// we need to define where in tilesheet we are representing each of these
-const CLAW: [SheetRegion; 1] = [SheetRegion::rect(68, 260, 64, 32)];
-const GOLD: [SheetRegion; 1] = [SheetRegion::rect(1, 131, 32, 32)];
-const SILVER: [SheetRegion; 1] = [SheetRegion::rect(1, 197, 32, 32)];
-const ROCK: [SheetRegion; 1] = [SheetRegion::rect(134, 65, 32, 32)];
-const GEM: [SheetRegion; 1] = [SheetRegion::rect(68, 131, 32, 32)];
-const CHAIN: [SheetRegion; 1] = [SheetRegion::rect(1, 262, 32, 32)];
+
+// 64 by 64 coordinated, related to Goldminer_tilesheet_trasparent
+// const CLAW: [SheetRegion; 1] = [SheetRegion::rect(68, 260, 32, 64)];
+// const GOLD: [SheetRegion; 1] = [SheetRegion::rect(1, 131, 32, 32)];
+// const SILVER: [SheetRegion; 1] = [SheetRegion::rect(1, 197, 32, 32)];
+// const ROCK: [SheetRegion; 1] = [SheetRegion::rect(134, 65, 32, 32)];
+// const GEM: [SheetRegion; 1] = [SheetRegion::rect(68, 131, 32, 32)];
+// const CHAIN: [SheetRegion; 1] = [SheetRegion::rect(1, 262, 32, 32)];
+
+// 8 by 8 coordinates, related to Goldminer_tilesheet1
+const CLAW: [SheetRegion; 1] = [SheetRegion::rect(1, 71, 8, 16)];
+const GOLD: [SheetRegion; 1] = [SheetRegion::rect(1, 17, 8, 8)];
+const SILVER: [SheetRegion; 1] = [SheetRegion::rect(1, 26, 8, 8)];
+const ROCK: [SheetRegion; 1] = [SheetRegion::rect(1, 35, 8, 8)];
+const GEM: [SheetRegion; 1] = [SheetRegion::rect(1, 53, 8, 8)];
+const CHAIN: [SheetRegion; 1] = [SheetRegion::rect(1, 80, 8, 8)];
 
 fn main() {
     #[cfg(not(target_arch = "wasm32"))]
@@ -175,7 +184,7 @@ fn main() {
 impl Game {
     fn new(renderer: &mut Immediate, cache: AssetCache) -> Self {
         let tile_handle = cache
-            .load::<Png>("Goldminer_Sheet_Transparent")
+            .load::<Png>("Goldminer_tilesheet1")
             .expect("Couldn't load tilesheet img");
         let tile_img = tile_handle.read().0.to_rgba8();
         let tile_tex = renderer.create_array_texture(
@@ -204,38 +213,20 @@ impl Game {
             camera,
         );
         let mut claw_body: VecDeque<Vec2> = VecDeque::new();
-        claw_body.push_back(Vec2 {
-            x: 100.0,
-            y: 100.0,
-        });
+        claw_body.push_back(Vec2 { x: 100.0, y: 100.0 });
         let mut entities: Vec<Object> = vec![];
-        entities.push(
-            Object {
-                pos: Vec2 {
-                    x: 200.0,
-                    y: 300.0,
-                },
-                e_type: EntityType::Rock,
-            }
-        );
-        entities.push(
-            Object {
-                pos: Vec2 {
-                    x: 200.0,
-                    y: 200.0,
-                },
-                e_type: EntityType::Gem,
-            }
-        );
-        entities.push(
-            Object {
-                pos: Vec2 {
-                    x: 100.0,
-                    y: 200.0,
-                },
-                e_type: EntityType::Gold,
-            }
-        );
+        entities.push(Object {
+            pos: Vec2 { x: 200.0, y: 300.0 },
+            e_type: EntityType::Rock,
+        });
+        entities.push(Object {
+            pos: Vec2 { x: 200.0, y: 200.0 },
+            e_type: EntityType::Gem,
+        });
+        entities.push(Object {
+            pos: Vec2 { x: 100.0, y: 200.0 },
+            e_type: EntityType::Gold,
+        });
         let mut game = Game {
             claw: Claw {
                 dir: 0.0,
@@ -266,7 +257,6 @@ impl Game {
                 EntityType::Snake => continue,
                 EntityType::Food => continue,
                 EntityType::Claw => continue,
-                
             }
         }
     }
@@ -294,9 +284,7 @@ impl Game {
                 }
             }
 
-            if self.claw.is_deployed == true {
-
-            }
+            if self.claw.is_deployed == true {}
             // let head_pos = self
             //     .snake
             //     .body
