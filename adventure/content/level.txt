@@ -43,4 +43,5 @@ x   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   
 x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x
 ======
 snake 10 10
+snake 10 10
 apple 5 5

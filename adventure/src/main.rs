@@ -171,8 +171,8 @@ impl Game {
         for i in 0i8..5 {
             let i = f32::from(i);
             player2_body.push_back(Vec2 {
-                x: 200.0 + i * 4.0,
-                y: 200.0,
+                x: 150.0 + i * 4.0,
+                y: 150.0,
             })
         }
         let mut game = Game {
@@ -182,7 +182,7 @@ impl Game {
                 body: (player1_body),
             },
             player2: Tron {
-                dir: (Dir::Left),
+                dir: (Dir::Right),
                 body: (player2_body),
             },
             level: level,
@@ -201,7 +201,7 @@ impl Game {
 
         
         for vector2 in self.player1.body.iter() {
-            if (count == 0) {
+            if count == 0 {
                 count = count + 1;
                 continue;
             };
@@ -210,12 +210,12 @@ impl Game {
         }
 
         count = 0;
-        for vector2 in self.player1.body.iter() {
-            if (count == 0) {
+        for vector2 in self.player2.body.iter() {
+            if count == 0 {
                 count = count + 1;
                 continue;
             };
-            frend.draw_sprite(0, self.player1.transform(count), TRON[1]);
+            frend.draw_sprite(0, self.player2.transform(count), TRON[1]);
             count = count + 1;
         }
     }
@@ -253,7 +253,7 @@ impl Game {
                 .clone();
             let new_head_pos1 = head_pos1 + self.player1.dir.to_vec2();
             let head_pos2 = self
-                .player1
+                .player2
                 .body
                 .front()
                 .expect("Tron body is empty")
@@ -333,7 +333,7 @@ impl Game {
         }
         for i in 0..initial_snake_length {
             initial_body2.push_back(Vec2 {
-                x: start_x2 + i as f32 * TILE_SZ as f32,
+                x: start_x2 - i as f32 * TILE_SZ as f32,
                 y: start_y2,
             });
         }
