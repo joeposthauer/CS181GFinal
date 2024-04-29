@@ -27,7 +27,7 @@ const CLAW_ROT_VEL: f32 = 0.1;
 struct Game {
     claw: Claw,
     score: usize,
-    current_level: Level, // Ayelet - was usize, changed to level
+    current_level: Level,
     levels: Vec<Level>,
     entities: Vec<Object>,
     timer: usize,
@@ -44,10 +44,10 @@ struct Claw {
 impl Claw {
     pub fn transform(&self) -> Transform {
         Transform {
-            x: self.body.get(0).unwrap().x,
-            y: self.body.get(0).unwrap().y,
+            x: self.body[0].x,
+            y: self.body[0].y,
             w: 8,
-            h: 8,
+            h: 16,
             rot: self.dir,
         }
     }
@@ -107,12 +107,12 @@ struct Contact {
 // const CHAIN: [SheetRegion; 1] = [SheetRegion::rect(1, 262, 32, 32)];
 
 // 8 by 8 coordinates, related to Goldminer_tilesheet1
-const CLAW: [SheetRegion; 1] = [SheetRegion::rect(1, 71, 8, 16)];
-const GOLD: [SheetRegion; 1] = [SheetRegion::rect(1, 17, 8, 8)];
-const SILVER: [SheetRegion; 1] = [SheetRegion::rect(1, 26, 8, 8)];
-const ROCK: [SheetRegion; 1] = [SheetRegion::rect(1, 35, 8, 8)];
-const GEM: [SheetRegion; 1] = [SheetRegion::rect(1, 53, 8, 8)];
-const CHAIN: [SheetRegion; 1] = [SheetRegion::rect(1, 80, 8, 8)];
+const CLAW: [SheetRegion; 1] = [SheetRegion::rect(1, 56, 8, 16)];
+const GOLD: [SheetRegion; 1] = [SheetRegion::rect(1, 10, 8, 8)];
+const SILVER: [SheetRegion; 1] = [SheetRegion::rect(1, 19, 8, 8)];
+const ROCK: [SheetRegion; 1] = [SheetRegion::rect(1, 27, 8, 8)];
+const GEM: [SheetRegion; 1] = [SheetRegion::rect(1, 47, 8, 8)];
+const CHAIN: [SheetRegion; 1] = [SheetRegion::rect(1, 74, 8, 8)];
 
 fn main() {
     #[cfg(not(target_arch = "wasm32"))]
@@ -204,6 +204,7 @@ impl Game {
                 .load::<String>("level")
                 .expect("Couldn't access level.txt")
                 .read(),
+            TILE_SZ,
         );
         // let current_level = 0; // For future if we want to add more levels?
         let camera = Camera2D {
@@ -218,26 +219,45 @@ impl Game {
             camera,
         );
         let mut claw_body: VecDeque<Vec2> = VecDeque::new();
-        claw_body.push_back(Vec2 { x: 100.0, y: 100.0 });
+        claw_body.push_back(Vec2 {
+            x: TILE_SZ as f32 * 15.0,
+            y: TILE_SZ as f32 * 25.0,
+        });
         let mut entities: Vec<Object> = vec![];
-        entities.push(Object {
-            pos: Vec2 { x: 200.0, y: 300.0 },
-            e_type: EntityType::Rock,
-        });
-        entities.push(Object {
-            pos: Vec2 { x: 200.0, y: 200.0 },
-            e_type: EntityType::Gem,
-        });
-        entities.push(Object {
-            pos: Vec2 { x: 100.0, y: 200.0 },
-            e_type: EntityType::Gold,
-        });
+        // load object from level.txt
+        for (etype, pos) in level.starts().iter() {
+            match etype {
+                EntityType::Claw => {}
+                EntityType::Rock => entities.push(Object {
+                    pos: *pos,
+                    e_type: EntityType::Rock,
+                }),
+                EntityType::Gem => entities.push(Object {
+                    pos: *pos,
+                    e_type: EntityType::Gem,
+                }),
+                EntityType::Gold => entities.push(Object {
+                    pos: *pos,
+                    e_type: EntityType::Gold,
+                }),
+                EntityType::Silver => entities.push(Object {
+                    pos: *pos,
+                    e_type: EntityType::Silver,
+                }),
+                EntityType::Snake => {}
+                EntityType::Food => {} // EntityType::Door(_rm, _x, _y) => {}
+                                       // EntityType::Enemy => self.enemies.push(Pos {
+                                       //     pos: *pos,
+                                       //     dir: Dir::S,
+                                       // }),
+            }
+        }
         let mut game = Game {
             claw: Claw {
                 dir: 0.0,
                 body: claw_body,
                 is_deployed: false,
-                velo_dir: false,
+                velo_dir: true,
             },
             score: 0,
             current_level: level,
@@ -281,7 +301,7 @@ impl Game {
                         self.claw.dir += CLAW_ROT_VEL;
                     }
                 } else {
-                    if self.claw.dir < 1.0 {
+                    if self.claw.dir < -1.0 {
                         self.claw.velo_dir = !self.claw.velo_dir;
                     } else {
                         self.claw.dir -= CLAW_ROT_VEL;
