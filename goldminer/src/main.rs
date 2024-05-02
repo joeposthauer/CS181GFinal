@@ -114,7 +114,7 @@ impl Object {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 struct Contact {
     rect_a: Rect,
     index_a: usize,
@@ -381,12 +381,28 @@ impl Game {
             self.frame_counter = 0;
         }
         let mut object_contacts: Vec<Contact> = Vec::new();
-        let mut object_to_remove: Vec<Contact> = Vec::new();
+        let mut object_to_remove: Vec<usize> = Vec::new();
         let object_rects: Vec<Rect> = self.entities.iter().map(|pos| pos.to_rect()).collect();
         let claw_rect: Rect = self.claw.to_rect();
 
         gather_contact(&[claw_rect], &object_rects, &mut object_contacts);
-        println!("{:?}", object_contacts);
+        // println!("{:?}", object_contacts);
+
+        // sort objects contacts vector
+        object_contacts.sort_by(|a, b| {
+            b.overlap.mag_sq().partial_cmp(&a.overlap.mag_sq()).unwrap()
+            // _or(std::cmp::Ordering::Equal)
+        });
+
+        for c in object_contacts.drain(..) {
+            if !object_to_remove.contains(&c.index_b) {
+                object_to_remove.push(c.index_b);
+            }
+        }
+        object_to_remove.sort();
+        for index in object_to_remove.iter().rev() {
+            self.entities.swap_remove(*index);
+        }
 
         fn gather_contact(a_rects: &[Rect], b_rects: &[Rect], contacts_list: &mut Vec<Contact>) {
             for (i, a_rect) in a_rects.iter().enumerate() {
