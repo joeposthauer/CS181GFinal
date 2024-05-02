@@ -80,6 +80,7 @@ struct Object {
     pos: Vec2,
     e_type: EntityType,
     is_moving: bool,
+    value: usize,
 }
 
 impl Object {
@@ -248,21 +249,25 @@ impl Game {
                     pos: *pos,
                     e_type: EntityType::Rock,
                     is_moving: false,
+                    value: 22,
                 }),
                 EntityType::Gem => entities.push(Object {
                     pos: *pos,
                     e_type: EntityType::Gem,
                     is_moving: false,
+                    value: 500,
                 }),
                 EntityType::Gold => entities.push(Object {
                     pos: *pos,
                     e_type: EntityType::Gold,
                     is_moving: false,
+                    value: 250,
                 }),
                 EntityType::Silver => entities.push(Object {
                     pos: *pos,
                     e_type: EntityType::Silver,
                     is_moving: false,
+                    value: 100,
                 }),
                 EntityType::Snake => {}
                 EntityType::Food => {} // EntityType::Door(_rm, _x, _y) => {}
