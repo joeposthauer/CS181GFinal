@@ -11,7 +11,7 @@ use frenderer::{
 
 #[cfg(target_arch = "aarch64")]
 use std::arch::aarch64::float32x2_t;
-use std::{collections::VecDeque, intrinsics::cosf64};
+use std::collections::VecDeque; // ,intrinsics::cosf64}; Ayelet - I have an error on this commented part
 
 // use std::collections::VecDeque;
 
@@ -19,8 +19,8 @@ use engine::{grid::Grid, *};
 use engine::{level::Level, *};
 
 const TILE_SZ: usize = 8;
-const W: usize = 240; //was 120 - should be 240, 8 * 30, no?
-const H: usize = 240; //was 120 - should be 240, 8 * 30, no?
+const W: usize = 240;
+const H: usize = 240;
 const DT: f32 = 1.0 / 60.0;
 const CLAW_ROT_VEL: f32 = 0.1;
 const CHAIN_SIZE: f32 = 8.0;
@@ -318,25 +318,24 @@ impl Game {
                 if self.claw.claw_dir == true {
                     let curr_x = self.claw.body.front().unwrap().x;
                     let curr_y = self.claw.body.front().unwrap().y;
-                    let new_x: f32 = curr_x + CHAIN_SIZE*f32::cos(self.claw.dir);
-                    let new_y: f32 = curr_y + CHAIN_SIZE*f32::sin(self.claw.dir);  
+                    let new_x: f32 = curr_x + CHAIN_SIZE * f32::cos(self.claw.dir);
+                    let new_y: f32 = curr_y + CHAIN_SIZE * f32::sin(self.claw.dir);
                     self.claw.body.push_front(*self.claw.body.back().unwrap());
-                } 
-                else 
+                } else
                 // retract claw
                 {
                     self.claw.body.pop_back();
                 }
             }
 
-            // change claw direction when claw gets outside map 
+            // change claw direction when claw gets outside map
             if self.claw.body.get(0).unwrap().x < 0.0
                 || self.claw.body.get(0).unwrap().y < 0.0
                 || self.claw.body.get(0).unwrap().x >= W as f32
                 || self.claw.body.get(0).unwrap().y >= H as f32
             {
                 self.claw.claw_dir = !self.claw.claw_dir;
-            } 
+            }
             // change claw direction if collision
             for entity in self.entities.iter() {
                 if self.claw.body.contains(&entity.pos) {
