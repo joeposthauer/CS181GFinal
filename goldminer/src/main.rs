@@ -202,6 +202,7 @@ impl Game {
                 .load::<String>("level")
                 .expect("Couldn't access level.txt")
                 .read(),
+            TILE_SZ,
         );
         // let current_level = 0; // For future if we want to add more levels?
         let camera = Camera2D {
@@ -217,8 +218,8 @@ impl Game {
         );
         let mut claw_body: VecDeque<Vec2> = VecDeque::new();
         claw_body.push_back(Vec2 {
-            x: TILE_SZ as f32 * 8.0,
-            y: TILE_SZ as f32 * 12.0,
+            x: TILE_SZ as f32 * 15.0,
+            y: TILE_SZ as f32 * 25.0,
         });
         let mut entities: Vec<Object> = vec![];
         for (etype, pos) in level.starts().iter() {
@@ -274,7 +275,7 @@ impl Game {
     fn render(&mut self, frend: &mut Immediate) {
         self.current_level.render_immediate(frend);
         frend.draw_sprite(0, self.claw.transform(), CLAW[0]);
-        
+
         for (i, chain) in self.claw.body.iter().enumerate() {
             if i == 0 {
                 continue;
@@ -323,9 +324,9 @@ impl Game {
                 if self.claw.claw_dir == true {
                     let curr_x = self.claw.body.front().unwrap().x;
                     let curr_y = self.claw.body.front().unwrap().y;
-                    let new_x: f32 = curr_x + CHAIN_SIZE * f32::cos(self.claw.dir-PI/2.0);
-                    let new_y: f32 = curr_y + CHAIN_SIZE * f32::sin(self.claw.dir-PI/2.0);
-                    self.claw.body.push_front(Vec2 {x: new_x, y: new_y});
+                    let new_x: f32 = curr_x + CHAIN_SIZE * f32::cos(self.claw.dir - PI / 2.0);
+                    let new_y: f32 = curr_y + CHAIN_SIZE * f32::sin(self.claw.dir - PI / 2.0);
+                    self.claw.body.push_front(Vec2 { x: new_x, y: new_y });
                 } else
                 // retract claw
                 {

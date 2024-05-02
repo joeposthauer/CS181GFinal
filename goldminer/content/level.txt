@@ -34,7 +34,6 @@ x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   
 x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x
 x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x   x
 ======
-claw 16 6
 rock 12 12
 rock 23 12
 rock 16 17
