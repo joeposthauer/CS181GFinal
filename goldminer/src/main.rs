@@ -12,7 +12,7 @@ use wgpu::naga::back::msl::EntryPointError;
 
 #[cfg(target_arch = "aarch64")]
 use std::arch::aarch64::float32x2_t;
-use std::{collections::VecDeque};
+use std::collections::VecDeque;
 
 // use std::collections::VecDeque;
 
@@ -20,9 +20,9 @@ use engine::{grid::Grid, *};
 use engine::{level::Level, *};
 
 const TILE_SZ: usize = 8;
-const W: usize = 120; //was 120 - should be 240, 8 * 30, no?
-const H: usize = 120; //was 120 - should be 240, 8 * 30, no?
-// i dont disagree, but seems that 120 fills the screen.... im not sure
+const W: usize = 240;
+const H: usize = 240;
+
 const DT: f32 = 1.0 / 60.0;
 const CLAW_ROT_VEL: f32 = 0.1;
 const CHAIN_SIZE: f32 = 8.0;
@@ -84,7 +84,6 @@ impl Object {
         }
         .with_depth(1)
     }
-
 }
 
 struct Contact {
@@ -230,21 +229,53 @@ impl Game {
             y: TILE_SZ as f32 * 25.0,
         });
         let mut entities: Vec<Object> = vec![];
-        entities.push(Object {
-            pos: Vec2 { x: 200.0, y: 150.0 },
-            e_type: EntityType::Rock,
-            is_moving: false,
-        });
-        entities.push(Object {
-            pos: Vec2 { x: 150.0, y: 150.0 },
-            e_type: EntityType::Gem,
-            is_moving: false,
-        });
-        entities.push(Object {
-            pos: Vec2 { x: 100.0, y: 200.0 },
-            e_type: EntityType::Gold,
-            is_moving: false,
-        });
+        for (etype, pos) in level.starts().iter() {
+            match etype {
+                EntityType::Claw => {}
+                EntityType::Rock => entities.push(Object {
+                    pos: *pos,
+                    e_type: EntityType::Rock,
+                    is_moving: false,
+                }),
+                EntityType::Gem => entities.push(Object {
+                    pos: *pos,
+                    e_type: EntityType::Gem,
+                    is_moving: false,
+                }),
+                EntityType::Gold => entities.push(Object {
+                    pos: *pos,
+                    e_type: EntityType::Gold,
+                    is_moving: false,
+                }),
+                EntityType::Silver => entities.push(Object {
+                    pos: *pos,
+                    e_type: EntityType::Silver,
+                    is_moving: false,
+                }),
+                EntityType::Snake => {}
+                EntityType::Food => {} // EntityType::Door(_rm, _x, _y) => {}
+                                       // EntityType::Enemy => self.enemies.push(Pos {
+                                       //     pos: *pos,
+                                       //     dir: Dir::S,
+                                       // }),
+            }
+        }
+
+        // entities.push(Object {
+        //     pos: Vec2 { x: 200.0, y: 150.0 },
+        //     e_type: EntityType::Rock,
+        //     is_moving: false,
+        // });
+        // entities.push(Object {
+        //     pos: Vec2 { x: 150.0, y: 150.0 },
+        //     e_type: EntityType::Gem,
+        //     is_moving: false,
+        // });
+        // entities.push(Object {
+        //     pos: Vec2 { x: 100.0, y: 200.0 },
+        //     e_type: EntityType::Gold,
+        //     is_moving: false,
+        // });
         let mut game = Game {
             claw: Claw {
                 dir: 0.0,
@@ -336,9 +367,7 @@ impl Game {
             }
 
             for entity in self.entities.iter_mut() {
-                if entity.is_moving == true {
-                    
-                }
+                if entity.is_moving == true {}
             }
 
             self.frame_counter = 0;
