@@ -1,5 +1,5 @@
  # Final Project CS 181G (Game Engine Programming)
-Authors: Ayelet Kleinerman & Joe Posthauer
+Authors: Ayelet Kleinerman & Joe Posthauer \n
 Professor: Joseph Osborn
 
 ## General Description
