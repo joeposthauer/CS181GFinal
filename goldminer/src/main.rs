@@ -384,7 +384,7 @@ impl Game {
         let object_rects: Vec<Rect> = self.entities.iter().map(|&pos| pos.to_rect()).collect();
         let claw_rect: Rect = self.claw.to_rect();
 
-        gather_contact(&claw_rect, &object_rects, &mut object_contacts);
+        gather_contact(&[claw_rect], &object_rects, &mut object_contacts);
     
 
     fn gather_contact(a_rects: &[Rect], b_rects: &[Rect], contacts_list: &mut Vec<Contact>) {
