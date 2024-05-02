@@ -384,25 +384,9 @@ impl Game {
         let object_rects: Vec<Rect> = self.entities.iter().map(|&pos| pos.to_rect()).collect();
         let claw_rect: Rect = self.claw.to_rect();
 
-        
         gather_contact(&claw_rect, &object_rects, &mut object_contacts);
     
 
-    // fn gather_contact(a_rects: &[Rect], b_rects: &[Rect], contacts_list: &mut Vec<Contact>) {
-    //     for (i, a_rect) in a_rects.iter().enumerate() {
-    //         for (j, b_rect) in b_rects.iter().enumerate() {
-    //             if let Some(overlap) = a_rect.overlap(*b_rect) {
-    //                 contacts_list.push(Contact {
-    //                     index_a: i,
-    //                     rect_a: *a_rect,
-    //                     index_b: j,
-    //                     rect_b: *b_rect,
-    //                     overlap: overlap,
-    //                 })
-    //             }
-    //         }
-    //     }
-    // }
     fn gather_contact(a_rects: &[Rect], b_rects: &[Rect], contacts_list: &mut Vec<Contact>) {
         for (i, a_rect) in a_rects.iter().enumerate() {
             for (j, b_rect) in b_rects.iter().enumerate() {
@@ -436,5 +420,6 @@ impl Game {
         }
         return overlap;
     }
+}
 }
 
