@@ -381,14 +381,11 @@ impl Game {
         }
         let mut object_contacts: Vec<Contact> = Vec::new();
         let mut object_to_remove: Vec<Contact> = Vec::new();
-        let object_rects: Vec<Rect> = self.entites.iter().map(|&pos| pos.to_rect()).collect();
-        // Get player's Rectengle
+        let object_rects: Vec<Rect> = self.entities.iter().map(|&pos| pos.to_rect()).collect();
         let claw_rect: Rect = self.claw.to_rect();
 
         
-        for object in self.entities.iter() {
-            gather_contact(&self.claw.to_rect(), &object.to_rect(), &mut object_contacts)
-        }
+        gather_contact(&claw_rect, &object_rects, &mut object_contacts);
     
 
     // fn gather_contact(a_rects: &[Rect], b_rects: &[Rect], contacts_list: &mut Vec<Contact>) {
@@ -440,4 +437,4 @@ impl Game {
         return overlap;
     }
 }
-}
+
