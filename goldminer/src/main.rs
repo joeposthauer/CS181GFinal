@@ -11,7 +11,7 @@ use frenderer::{
 
 #[cfg(target_arch = "aarch64")]
 use std::arch::aarch64::float32x2_t;
-use std::collections::VecDeque;
+use std::{collections::VecDeque, intrinsics::cosf64};
 
 // use std::collections::VecDeque;
 
@@ -23,6 +23,7 @@ const W: usize = 240; //was 120 - should be 240, 8 * 30, no?
 const H: usize = 240; //was 120 - should be 240, 8 * 30, no?
 const DT: f32 = 1.0 / 60.0;
 const CLAW_ROT_VEL: f32 = 0.1;
+const CHAIN_SIZE: f32 = 8.0;
 
 struct Game {
     claw: Claw,
@@ -295,6 +296,10 @@ impl Game {
             if self.claw.is_deployed == true {
                 // shoot claw
                 if self.claw.claw_dir == true {
+                    let curr_x = self.claw.body.front().unwrap().x;
+                    let curr_y = self.claw.body.front().unwrap().y;
+                    let new_x: f32 = curr_x + CHAIN_SIZE*f32::cos(self.claw.dir);
+                    let new_y: f32 = curr_y + CHAIN_SIZE*f32::sin(self.claw.dir);  
                     self.claw.body.push_front(*self.claw.body.back().unwrap());
                 } 
                 else 
@@ -318,39 +323,6 @@ impl Game {
                     self.claw.claw_dir = !self.claw.claw_dir;
                 }
             }
-
-
-            // let head_pos = self
-            //     .snake
-            //     .body
-            //     .front()
-            //     .expect("Snake body is empty")
-            //     .clone();
-            // let new_head_pos = head_pos + self.snake.dir.to_vec2();
-            // // coliision with the wall - restart game
-            // if new_head_pos.x < 0.0
-            //     || new_head_pos.y < 0.0
-            //     || new_head_pos.x >= W as f32
-            //     || new_head_pos.y >= H as f32
-            // {
-            //     self.restart();
-            //     return;
-            // }
-
-            // if self.snake.body.contains(&new_head_pos) {
-            //     self.restart();
-            //     return;
-            // }
-            // if new_head_pos == self.apple.pos {
-            //     // 3 times to growth is a more noticlable
-            //     self.snake.body.push_front(new_head_pos);
-            //     self.snake.body.push_front(new_head_pos);
-            //     self.snake.body.push_front(new_head_pos);
-            //     self.relocate_apple();
-            // } else {
-            //     self.snake.body.push_front(new_head_pos);
-            //     self.snake.body.pop_back();
-            // }
             self.frame_counter = 0;
         }
     }
