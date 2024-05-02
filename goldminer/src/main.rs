@@ -39,6 +39,7 @@ struct Claw {
     body: VecDeque<Vec2>,
     is_deployed: bool,
     velo_dir: bool,
+    claw_dir: bool,
 }
 
 impl Claw {
@@ -218,7 +219,7 @@ impl Game {
             camera,
         );
         let mut claw_body: VecDeque<Vec2> = VecDeque::new();
-        claw_body.push_back(Vec2 { x: 100.0, y: 100.0 });
+        claw_body.push_back(Vec2 { x: 200.0, y: 250.0 });
         let mut entities: Vec<Object> = vec![];
         entities.push(Object {
             pos: Vec2 { x: 200.0, y: 150.0 },
@@ -238,6 +239,7 @@ impl Game {
                 body: claw_body,
                 is_deployed: false,
                 velo_dir: false,
+                claw_dir: true,
             },
             score: 0,
             current_level: level,
@@ -289,7 +291,35 @@ impl Game {
                 }
             }
 
-            if self.claw.is_deployed == true {}
+            // move claw
+            if self.claw.is_deployed == true {
+                // shoot claw
+                if self.claw.claw_dir == true {
+                    self.claw.body.push_front(*self.claw.body.back().unwrap());
+                } 
+                else 
+                // retract claw
+                {
+                    self.claw.body.pop_back();
+                }
+            }
+
+            // change claw direction when claw gets outside map 
+            if self.claw.body.get(0).unwrap().x < 0.0
+                || self.claw.body.get(0).unwrap().y < 0.0
+                || self.claw.body.get(0).unwrap().x >= W as f32
+                || self.claw.body.get(0).unwrap().y >= H as f32
+            {
+                self.claw.claw_dir = !self.claw.claw_dir;
+            } 
+            // change claw direction if collision
+            for entity in self.entities.iter() {
+                if self.claw.body.contains(&entity.pos) {
+                    self.claw.claw_dir = !self.claw.claw_dir;
+                }
+            }
+
+
             // let head_pos = self
             //     .snake
             //     .body
