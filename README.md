@@ -43,11 +43,11 @@ this project uses the frenderer crate extensevily, (https://github.com/JoeOsborn
 
 ## Games Screenshots
 ### Adventure
-![alt text](https://github.com/[joeposthauer]/[CS181GFinal]/[main]/Goldminer/Goldminer.png?raw=true)
+![Adventure Screenshot](https://github.com/joeposthauer/CS181GFinal/blob/main/adventure/Tron.png?raw=true)
 ### Goldminer
-https://github.com/github/joeposthauer/CS181GFinal/Goldminer/Goldminer.png
+![Goldminer Screenshot](https://github.com/joeposthauer/CS181GFinal/blob/main/goldminer/Goldminer.png?raw=true)
 ### Snake
-https://github.com/github/joeposthauer/CS181GFinal/Snake/Snake.png
+![Snake Screenshot](https://github.com/joeposthauer/CS181GFinal/blob/main/snake/Snake.png?raw=true)
 
 ## Future Steps
 
