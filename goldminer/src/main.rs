@@ -56,6 +56,15 @@ impl Claw {
         }
     }
 
+    pub fn to_rect(self) -> Rect {
+        Rect {
+            x: self.body[0].x - (TILE_SZ as f32 / 2.0),
+            y: self.body[0].y - (TILE_SZ as f32 / 2.0),
+            h: TILE_SZ as u16,
+            w: TILE_SZ as u16, 
+        }
+    }
+
     pub fn chain_transform(&self, index: usize) -> Transform {
         Transform {
             x: self.body.get(index).unwrap().x,
@@ -93,6 +102,15 @@ impl Object {
             _ => panic!("can't draw this type"),
         }
         .with_depth(1)
+    }
+
+    pub fn to_rect(self) -> Rect {
+        Rect {
+            x: self.pos.x - (TILE_SZ as f32 / 2.0),
+            y: self.pos.y - (TILE_SZ as f32 / 2.0),
+            h: TILE_SZ as u16,
+            w: TILE_SZ as u16, 
+        }
     }
 }
 
@@ -361,8 +379,33 @@ impl Game {
 
             self.frame_counter = 0;
         }
-    }
+        let mut object_contacts: Vec<Contact> = Vec::new();
+        let mut object_to_remove: Vec<Contact> = Vec::new();
+        let object_rects: Vec<Rect> = self.entites.iter().map(|&pos| pos.to_rect()).collect();
+        // Get player's Rectengle
+        let claw_rect: Rect = self.claw.to_rect();
 
+        
+        for object in self.entities.iter() {
+            gather_contact(&self.claw.to_rect(), &object.to_rect(), &mut object_contacts)
+        }
+    
+
+    // fn gather_contact(a_rects: &[Rect], b_rects: &[Rect], contacts_list: &mut Vec<Contact>) {
+    //     for (i, a_rect) in a_rects.iter().enumerate() {
+    //         for (j, b_rect) in b_rects.iter().enumerate() {
+    //             if let Some(overlap) = a_rect.overlap(*b_rect) {
+    //                 contacts_list.push(Contact {
+    //                     index_a: i,
+    //                     rect_a: *a_rect,
+    //                     index_b: j,
+    //                     rect_b: *b_rect,
+    //                     overlap: overlap,
+    //                 })
+    //             }
+    //         }
+    //     }
+    // }
     fn gather_contact(a_rects: &[Rect], b_rects: &[Rect], contacts_list: &mut Vec<Contact>) {
         for (i, a_rect) in a_rects.iter().enumerate() {
             for (j, b_rect) in b_rects.iter().enumerate() {
@@ -396,4 +439,5 @@ impl Game {
         }
         return overlap;
     }
+}
 }
