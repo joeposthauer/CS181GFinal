@@ -7,7 +7,7 @@ use frenderer::{
 
 // Ayelet - I cannot run this line. It seems to step from differences in hardware that I guess my machine
 // doesnt' support. I changed it to the following two lines which seems to solve the issue for me.
-// use std::{arch::aarch64::float32x2_t, collections::VecDeque};
+// use std::{arch::aarch64::float32x2_t, collections::VecDeque}; -Joe ok!
 
 #[cfg(target_arch = "aarch64")]
 use std::arch::aarch64::float32x2_t;
