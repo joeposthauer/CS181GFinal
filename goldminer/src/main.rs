@@ -81,6 +81,7 @@ struct Object {
     e_type: EntityType,
     is_moving: bool,
     value: usize,
+    picked_up: bool,
 }
 
 impl Object {
@@ -250,24 +251,28 @@ impl Game {
                     e_type: EntityType::Rock,
                     is_moving: false,
                     value: 22,
+                    picked_up: false,
                 }),
                 EntityType::Gem => entities.push(Object {
                     pos: *pos,
                     e_type: EntityType::Gem,
                     is_moving: false,
                     value: 500,
+                    picked_up: false,
                 }),
                 EntityType::Gold => entities.push(Object {
                     pos: *pos,
                     e_type: EntityType::Gold,
                     is_moving: false,
                     value: 250,
+                    picked_up: false,
                 }),
                 EntityType::Silver => entities.push(Object {
                     pos: *pos,
                     e_type: EntityType::Silver,
                     is_moving: false,
                     value: 100,
+                    picked_up: false,
                 }),
                 EntityType::Snake => {}
                 EntityType::Food => {} // EntityType::Door(_rm, _x, _y) => {}
@@ -351,14 +356,27 @@ impl Game {
                     let new_x: f32 = curr_x + CHAIN_SIZE * f32::cos(self.claw.dir - PI / 2.0);
                     let new_y: f32 = curr_y + CHAIN_SIZE * f32::sin(self.claw.dir - PI / 2.0);
                     self.claw.body.push_front(Vec2 { x: new_x, y: new_y });
+
+                    for entity in self.entities.iter_mut() {
+                        if self.claw.body.front().unwrap().distance(&entity.pos) < CHAIN_SIZE
+                            && !entity.picked_up
+                        {
+                            entity.picked_up = true;
+                            entity.is_moving = true;
+                        }
+                    }
                 } else
                 // retract claw
                 {
                     if self.claw.body.len() > 1 {
                         self.claw.body.pop_front();
+                        for entity in self.entities.iter_mut().filter(|e| e.picked_up) {
+                            entity.pos = *self.claw.body.front().unwrap();
+                        }
                     } else {
                         self.claw.is_deployed = false;
                         self.claw.claw_dir = true;
+                        self.entities.retain(|e| !e.picked_up);
                     }
                 }
             }
@@ -373,9 +391,10 @@ impl Game {
             }
             // change claw direction if collision
             for entity in self.entities.iter_mut() {
-                if self.claw.body.contains(&entity.pos) {
+                if self.claw.body.contains(&entity.pos) && !entity.picked_up {
                     self.claw.claw_dir = !self.claw.claw_dir;
                     entity.is_moving = true;
+                    entity.picked_up = true;
                 }
             }
 
@@ -404,10 +423,10 @@ impl Game {
                 object_to_remove.push(c.index_b);
             }
         }
-        object_to_remove.sort();
-        for index in object_to_remove.iter().rev() {
-            self.entities.swap_remove(*index);
-        }
+        // object_to_remove.sort();
+        // for index in object_to_remove.iter().rev() {
+        //     self.entities.swap_remove(*index);
+        // }
 
         fn gather_contact(a_rects: &[Rect], b_rects: &[Rect], contacts_list: &mut Vec<Contact>) {
             for (i, a_rect) in a_rects.iter().enumerate() {
@@ -425,22 +444,22 @@ impl Game {
             }
         }
 
-        fn compute_displacement(a: Rect, b: Rect) -> Vec2 {
-            let Some(mut overlap) = a.overlap(b) else {
-                return Vec2 { x: 0.0, y: 0.0 };
-            };
-            if overlap.y < overlap.x {
-                overlap.x = 0.0;
-            } else {
-                overlap.y = 0.0;
-            }
-            if a.x < b.x {
-                overlap.x *= -1.0;
-            }
-            if a.y < b.y {
-                overlap.y *= -1.0;
-            }
-            return overlap;
-        }
+        // fn compute_displacement(a: Rect, b: Rect) -> Vec2 {
+        //     let Some(mut overlap) = a.overlap(b) else {
+        //         return Vec2 { x: 0.0, y: 0.0 };
+        //     };
+        //     if overlap.y < overlap.x {
+        //         overlap.x = 0.0;
+        //     } else {
+        //         overlap.y = 0.0;
+        //     }
+        //     if a.x < b.x {
+        //         overlap.x *= -1.0;
+        //     }
+        //     if a.y < b.y {
+        //         overlap.y *= -1.0;
+        //     }
+        //     return overlap;
+        // }
     }
 }
