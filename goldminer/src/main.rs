@@ -55,6 +55,16 @@ impl Claw {
             rot: self.dir,
         }
     }
+
+    pub fn chain_transform(&self, index: usize) -> Transform {
+        Transform {
+            x: self.body.get(index).unwrap().x,
+            y: self.body.get(index).unwrap().y,
+            w: 8,
+            h: 8,
+            rot: self.dir,
+        }
+    }
 }
 
 struct Object {
@@ -93,23 +103,6 @@ struct Contact {
     index_b: usize,
     overlap: Vec2,
 }
-
-// Claw 68 260 128 64
-// Chain 1 262 64 64
-// Rock 134 65 64 64
-// Gold 1 131 64 64
-// Silver 1 197 64 64
-// Gem 68 131 64 64
-// Bottom background  1 65 64 64
-// Top Background 68 65 64 64
-
-// 64 by 64 coordinated, related to Goldminer_tilesheet_trasparent
-// const CLAW: [SheetRegion; 1] = [SheetRegion::rect(68, 260, 32, 64)];
-// const GOLD: [SheetRegion; 1] = [SheetRegion::rect(1, 131, 32, 32)];
-// const SILVER: [SheetRegion; 1] = [SheetRegion::rect(1, 197, 32, 32)];
-// const ROCK: [SheetRegion; 1] = [SheetRegion::rect(134, 65, 32, 32)];
-// const GEM: [SheetRegion; 1] = [SheetRegion::rect(68, 131, 32, 32)];
-// const CHAIN: [SheetRegion; 1] = [SheetRegion::rect(1, 262, 32, 32)];
 
 // 8 by 8 coordinates, related to Goldminer_tilesheet1
 const CLAW: [SheetRegion; 1] = [SheetRegion::rect(1, 56, 8, 16)];
@@ -209,7 +202,6 @@ impl Game {
                 .load::<String>("level")
                 .expect("Couldn't access level.txt")
                 .read(),
-            TILE_SZ,
         );
         // let current_level = 0; // For future if we want to add more levels?
         let camera = Camera2D {
@@ -225,8 +217,8 @@ impl Game {
         );
         let mut claw_body: VecDeque<Vec2> = VecDeque::new();
         claw_body.push_back(Vec2 {
-            x: TILE_SZ as f32 * 15.0,
-            y: TILE_SZ as f32 * 25.0,
+            x: TILE_SZ as f32 * 8.0,
+            y: TILE_SZ as f32 * 12.0,
         });
         let mut entities: Vec<Object> = vec![];
         for (etype, pos) in level.starts().iter() {
@@ -260,22 +252,6 @@ impl Game {
                                        // }),
             }
         }
-
-        // entities.push(Object {
-        //     pos: Vec2 { x: 200.0, y: 150.0 },
-        //     e_type: EntityType::Rock,
-        //     is_moving: false,
-        // });
-        // entities.push(Object {
-        //     pos: Vec2 { x: 150.0, y: 150.0 },
-        //     e_type: EntityType::Gem,
-        //     is_moving: false,
-        // });
-        // entities.push(Object {
-        //     pos: Vec2 { x: 100.0, y: 200.0 },
-        //     e_type: EntityType::Gold,
-        //     is_moving: false,
-        // });
         let mut game = Game {
             claw: Claw {
                 dir: 0.0,
@@ -298,6 +274,20 @@ impl Game {
     fn render(&mut self, frend: &mut Immediate) {
         self.current_level.render_immediate(frend);
         frend.draw_sprite(0, self.claw.transform(), CLAW[0]);
+        // if self.claw.body.capacity() > 1 {
+        //     for i in 0..self.claw.body.capacity() {
+        //         if i == 0 {
+        //             continue;
+        //         } 
+        //         frend.draw_sprite(0, self.claw.chain_transform(i), CHAIN[0]);
+        //     }
+        // }
+        for (i, chain) in self.claw.body.iter().enumerate() {
+            if i == 0 {
+                continue;
+            }
+            frend.draw_sprite(0, self.claw.chain_transform(i), CHAIN[0]);
+        }
         for obj in self.entities.iter() {
             match obj.e_type {
                 EntityType::Gold => frend.draw_sprite(0, obj.transform(), GOLD[0]),
@@ -346,7 +336,7 @@ impl Game {
                 } else
                 // retract claw
                 {
-                    self.claw.body.pop_back();
+                    self.claw.body.pop_front();
                 }
             }
 
