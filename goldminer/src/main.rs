@@ -56,12 +56,12 @@ impl Claw {
         }
     }
 
-    pub fn to_rect(self) -> Rect {
+    pub fn to_rect(&self) -> Rect {
         Rect {
             x: self.body[0].x - (TILE_SZ as f32 / 2.0),
             y: self.body[0].y - (TILE_SZ as f32 / 2.0),
             h: TILE_SZ as u16,
-            w: TILE_SZ as u16, 
+            w: TILE_SZ as u16,
         }
     }
 
@@ -104,16 +104,17 @@ impl Object {
         .with_depth(1)
     }
 
-    pub fn to_rect(self) -> Rect {
+    pub fn to_rect(&self) -> Rect {
         Rect {
             x: self.pos.x - (TILE_SZ as f32 / 2.0),
             y: self.pos.y - (TILE_SZ as f32 / 2.0),
             h: TILE_SZ as u16,
-            w: TILE_SZ as u16, 
+            w: TILE_SZ as u16,
         }
     }
 }
 
+#[derive(Debug)]
 struct Contact {
     rect_a: Rect,
     index_a: usize,
@@ -381,45 +382,44 @@ impl Game {
         }
         let mut object_contacts: Vec<Contact> = Vec::new();
         let mut object_to_remove: Vec<Contact> = Vec::new();
-        let object_rects: Vec<Rect> = self.entities.iter().map(|&pos| pos.to_rect()).collect();
+        let object_rects: Vec<Rect> = self.entities.iter().map(|pos| pos.to_rect()).collect();
         let claw_rect: Rect = self.claw.to_rect();
 
         gather_contact(&[claw_rect], &object_rects, &mut object_contacts);
-    
+        println!("{:?}", object_contacts);
 
-    fn gather_contact(a_rects: &[Rect], b_rects: &[Rect], contacts_list: &mut Vec<Contact>) {
-        for (i, a_rect) in a_rects.iter().enumerate() {
-            for (j, b_rect) in b_rects.iter().enumerate() {
-                if let Some(overlap) = a_rect.overlap(*b_rect) {
-                    contacts_list.push(Contact {
-                        index_a: i,
-                        rect_a: *a_rect,
-                        index_b: j,
-                        rect_b: *b_rect,
-                        overlap: overlap,
-                    })
+        fn gather_contact(a_rects: &[Rect], b_rects: &[Rect], contacts_list: &mut Vec<Contact>) {
+            for (i, a_rect) in a_rects.iter().enumerate() {
+                for (j, b_rect) in b_rects.iter().enumerate() {
+                    if let Some(overlap) = a_rect.overlap(*b_rect) {
+                        contacts_list.push(Contact {
+                            index_a: i,
+                            rect_a: *a_rect,
+                            index_b: j,
+                            rect_b: *b_rect,
+                            overlap: overlap,
+                        })
+                    }
                 }
             }
         }
-    }
 
-    fn compute_displacement(a: Rect, b: Rect) -> Vec2 {
-        let Some(mut overlap) = a.overlap(b) else {
-            return Vec2 { x: 0.0, y: 0.0 };
-        };
-        if overlap.y < overlap.x {
-            overlap.x = 0.0;
-        } else {
-            overlap.y = 0.0;
+        fn compute_displacement(a: Rect, b: Rect) -> Vec2 {
+            let Some(mut overlap) = a.overlap(b) else {
+                return Vec2 { x: 0.0, y: 0.0 };
+            };
+            if overlap.y < overlap.x {
+                overlap.x = 0.0;
+            } else {
+                overlap.y = 0.0;
+            }
+            if a.x < b.x {
+                overlap.x *= -1.0;
+            }
+            if a.y < b.y {
+                overlap.y *= -1.0;
+            }
+            return overlap;
         }
-        if a.x < b.x {
-            overlap.x *= -1.0;
-        }
-        if a.y < b.y {
-            overlap.y *= -1.0;
-        }
-        return overlap;
     }
 }
-}
-
