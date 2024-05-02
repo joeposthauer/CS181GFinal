@@ -329,7 +329,7 @@ impl Game {
                 } else
                 // retract claw
                 {
-                    if self.claw.body.capacity() > 1 {
+                    if self.claw.body.len() > 1 {
                         self.claw.body.pop_front();
                     } else {
                         self.claw.is_deployed = false;
