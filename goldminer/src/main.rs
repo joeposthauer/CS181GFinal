@@ -7,7 +7,7 @@ use frenderer::{
 
 // Ayelet - I cannot run this line. It seems to step from differences in hardware that I guess my machine
 // doesnt' support. I changed it to the following two lines which seems to solve the issue for me.
-// use std::{arch::aarch64::float32x2_t, collections::VecDeque};
+// use std::{arch::aarch64::float32x2_t, collections::VecDeque}; -Joe ok!
 
 #[cfg(target_arch = "aarch64")]
 use std::arch::aarch64::float32x2_t;
@@ -221,11 +221,11 @@ impl Game {
         claw_body.push_back(Vec2 { x: 100.0, y: 100.0 });
         let mut entities: Vec<Object> = vec![];
         entities.push(Object {
-            pos: Vec2 { x: 200.0, y: 300.0 },
+            pos: Vec2 { x: 200.0, y: 150.0 },
             e_type: EntityType::Rock,
         });
         entities.push(Object {
-            pos: Vec2 { x: 200.0, y: 200.0 },
+            pos: Vec2 { x: 150.0, y: 150.0 },
             e_type: EntityType::Gem,
         });
         entities.push(Object {
