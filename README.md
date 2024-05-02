@@ -41,6 +41,14 @@ A classic snake game with custom textures.
 ## Modules
 this project uses the frenderer crate extensevily, (https://github.com/JoeOsborn/frenderer)
 
+## Games Screenshots
+### Adventure
+https://github.com/github/joeposthauer/CS181GFinal/Adventure/Tron.png
+### Goldminer
+https://github.com/github/joeposthauer/CS181GFinal/Goldminer/Goldminer.png
+### Snake
+https://github.com/github/joeposthauer/CS181GFinal/Snake/Snake.png
+
 ## Future Steps
 
 
