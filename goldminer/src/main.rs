@@ -274,14 +274,7 @@ impl Game {
     fn render(&mut self, frend: &mut Immediate) {
         self.current_level.render_immediate(frend);
         frend.draw_sprite(0, self.claw.transform(), CLAW[0]);
-        // if self.claw.body.capacity() > 1 {
-        //     for i in 0..self.claw.body.capacity() {
-        //         if i == 0 {
-        //             continue;
-        //         } 
-        //         frend.draw_sprite(0, self.claw.chain_transform(i), CHAIN[0]);
-        //     }
-        // }
+        
         for (i, chain) in self.claw.body.iter().enumerate() {
             if i == 0 {
                 continue;
@@ -332,11 +325,16 @@ impl Game {
                     let curr_y = self.claw.body.front().unwrap().y;
                     let new_x: f32 = curr_x + CHAIN_SIZE * f32::cos(self.claw.dir);
                     let new_y: f32 = curr_y + CHAIN_SIZE * f32::sin(self.claw.dir);
-                    self.claw.body.push_front(*self.claw.body.back().unwrap());
+                    self.claw.body.push_front(Vec2 {x: new_x, y: new_y});
                 } else
                 // retract claw
                 {
-                    self.claw.body.pop_front();
+                    if self.claw.body.capacity() > 1 {
+                        self.claw.body.pop_front();
+                    } else {
+                        self.claw.is_deployed = false;
+                        self.claw.claw_dir = true;
+                    }
                 }
             }
 
