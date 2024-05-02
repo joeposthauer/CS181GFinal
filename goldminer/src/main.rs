@@ -11,7 +11,7 @@ use frenderer::{
 
 #[cfg(target_arch = "aarch64")]
 use std::arch::aarch64::float32x2_t;
-use std::collections::VecDeque;
+use std::{collections::VecDeque, intrinsics::cosf64};
 
 // use std::collections::VecDeque;
 
@@ -23,6 +23,7 @@ const W: usize = 240; //was 120 - should be 240, 8 * 30, no?
 const H: usize = 240; //was 120 - should be 240, 8 * 30, no?
 const DT: f32 = 1.0 / 60.0;
 const CLAW_ROT_VEL: f32 = 0.1;
+const CHAIN_SIZE: f32 = 8.0;
 
 struct Game {
     claw: Claw,
@@ -39,6 +40,7 @@ struct Claw {
     body: VecDeque<Vec2>,
     is_deployed: bool,
     velo_dir: bool,
+    claw_dir: bool,
 }
 
 impl Claw {
@@ -257,7 +259,8 @@ impl Game {
                 dir: 0.0,
                 body: claw_body,
                 is_deployed: false,
-                velo_dir: true,
+                velo_dir: false,
+                claw_dir: true,
             },
             score: 0,
             current_level: level,
@@ -309,38 +312,37 @@ impl Game {
                 }
             }
 
-            if self.claw.is_deployed == true {}
-            // let head_pos = self
-            //     .snake
-            //     .body
-            //     .front()
-            //     .expect("Snake body is empty")
-            //     .clone();
-            // let new_head_pos = head_pos + self.snake.dir.to_vec2();
-            // // coliision with the wall - restart game
-            // if new_head_pos.x < 0.0
-            //     || new_head_pos.y < 0.0
-            //     || new_head_pos.x >= W as f32
-            //     || new_head_pos.y >= H as f32
-            // {
-            //     self.restart();
-            //     return;
-            // }
+            // move claw
+            if self.claw.is_deployed == true {
+                // shoot claw
+                if self.claw.claw_dir == true {
+                    let curr_x = self.claw.body.front().unwrap().x;
+                    let curr_y = self.claw.body.front().unwrap().y;
+                    let new_x: f32 = curr_x + CHAIN_SIZE*f32::cos(self.claw.dir);
+                    let new_y: f32 = curr_y + CHAIN_SIZE*f32::sin(self.claw.dir);  
+                    self.claw.body.push_front(*self.claw.body.back().unwrap());
+                } 
+                else 
+                // retract claw
+                {
+                    self.claw.body.pop_back();
+                }
+            }
 
-            // if self.snake.body.contains(&new_head_pos) {
-            //     self.restart();
-            //     return;
-            // }
-            // if new_head_pos == self.apple.pos {
-            //     // 3 times to growth is a more noticlable
-            //     self.snake.body.push_front(new_head_pos);
-            //     self.snake.body.push_front(new_head_pos);
-            //     self.snake.body.push_front(new_head_pos);
-            //     self.relocate_apple();
-            // } else {
-            //     self.snake.body.push_front(new_head_pos);
-            //     self.snake.body.pop_back();
-            // }
+            // change claw direction when claw gets outside map 
+            if self.claw.body.get(0).unwrap().x < 0.0
+                || self.claw.body.get(0).unwrap().y < 0.0
+                || self.claw.body.get(0).unwrap().x >= W as f32
+                || self.claw.body.get(0).unwrap().y >= H as f32
+            {
+                self.claw.claw_dir = !self.claw.claw_dir;
+            } 
+            // change claw direction if collision
+            for entity in self.entities.iter() {
+                if self.claw.body.contains(&entity.pos) {
+                    self.claw.claw_dir = !self.claw.claw_dir;
+                }
+            }
             self.frame_counter = 0;
         }
     }
