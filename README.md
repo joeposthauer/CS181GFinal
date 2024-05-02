@@ -1,4 +1,4 @@
-# Final Project CS 181G (Game Engine Programming)
+ # Final Project CS 181G (Game Engine Programming)
 Authors: Ayelet Kleinerman & Joe Posthauer
 Professor: Joseph Osborn
 
@@ -39,7 +39,8 @@ A classic snake game with custom textures.
 - main.rs: the main functionality of the Snake game, which includes the implementation of the functions for new game intialization, render and simulate, as well the snake movement, collision detection, creation of apples, lengthening of the snake.
 
 ## Modules
-this project uses the frenderer crate extensevily, (https://github.com/JoeOsborn/frenderer)
+This project uses the frenderer crate extensevily, (https://github.com/JoeOsborn/frenderer)
+It is based on tile maps and sheet regions to represent all objects, maps, and players.
 
 ## Games Screenshots
 ### Adventure
@@ -50,9 +51,13 @@ this project uses the frenderer crate extensevily, (https://github.com/JoeOsborn
 ![Snake Screenshot](https://github.com/joeposthauer/CS181GFinal/blob/main/snake/Snake.png?raw=true)
 
 ## Future Steps
-
-
-
-
+This project is not final, and more work is required to get it to be done.
+There should be more changes with the engine, moving more shared structs and functions from the main.rs files to it.
+Some functionality need to be changed to make the engine more versetile (such as changing EntityTypes themeselves to be in main.rs and not in engine)
+Snake may be changed to work on tile size instead of pixels so the snake would not be able to hit only part of the apple (which currently do not count), it may also be changed to have a score, additional levels and complexity (adding obsticles), have graphics of snake head and body.
+Tron should have different graphic which will be closer visually to the original Tron game, it should also have Game Over screen and who won, and additional features that can help players when picked up such as increase/decrease speed.
+Goldminer needs the most work - increase size of objects, finish functionality to drag objects, add score counter, add different values to different objects, add a goal score for the level, add more levels, add a timer for each level, add obstacles, add diffrent object the player can buy to help them in the game.
  
-
+## Acknowledgments
+We thank professor Osborn for his mentorship throughout the class and while creating these games.
+We thank each other for the cooperation, knowledge, and support thoughout the creation of this project.
