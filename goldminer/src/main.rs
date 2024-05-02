@@ -22,7 +22,7 @@ use engine::{level::Level, *};
 const TILE_SZ: usize = 8;
 const W: usize = 240;
 const H: usize = 240;
-
+pub const PI: f32 = 3.14159265358979323846264338327950288_f32; // 3.1415926535897931f64
 const DT: f32 = 1.0 / 60.0;
 const CLAW_ROT_VEL: f32 = 0.1;
 const CHAIN_SIZE: f32 = 8.0;
@@ -323,8 +323,8 @@ impl Game {
                 if self.claw.claw_dir == true {
                     let curr_x = self.claw.body.front().unwrap().x;
                     let curr_y = self.claw.body.front().unwrap().y;
-                    let new_x: f32 = curr_x + CHAIN_SIZE * f32::cos(self.claw.dir);
-                    let new_y: f32 = curr_y + CHAIN_SIZE * f32::sin(self.claw.dir);
+                    let new_x: f32 = curr_x + CHAIN_SIZE * f32::cos(self.claw.dir-PI/2.0);
+                    let new_y: f32 = curr_y + CHAIN_SIZE * f32::sin(self.claw.dir-PI/2.0);
                     self.claw.body.push_front(Vec2 {x: new_x, y: new_y});
                 } else
                 // retract claw
